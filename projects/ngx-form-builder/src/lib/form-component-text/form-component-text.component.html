@@ -1,0 +1,23 @@
+@switch(component.textStyle) {
+	@case(TextStyle.H1) {
+		<h1>{{ component.text | multilingualText }}</h1>
+	}
+	@case(TextStyle.H2) {
+		<h2>{{ component.text | multilingualText }}</h2>
+	}
+	@case(TextStyle.H3) {
+		<h3>{{ component.text | multilingualText }}</h3>
+	}
+	@case(TextStyle.H4) {
+		<h4>{{ component.text | multilingualText }}</h4>
+	}
+	@case(TextStyle.H5) {
+		<h5>{{ component.text | multilingualText }}</h5>
+	}
+	@case(TextStyle.H6) {
+		<h6>{{ component.text | multilingualText }}</h6>
+	}
+	@default {
+		<div>{{ component.text | multilingualText }}</div>
+	}
+}

@@ -1,0 +1,7 @@
+<div class="flex-col">
+	@for (tool of tools; track tool.id) {
+		<div class="tool-item">
+			<app-form-component [element]="tool" [form]="form" [isTool]="true" />
+		</div>
+	}
+</div>

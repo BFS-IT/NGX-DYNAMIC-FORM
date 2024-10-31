@@ -1,0 +1,10 @@
+<div class="builder">
+	<div>
+		<app-form-grid [form]="form" mode="build" [media]="media"></app-form-grid>
+		<app-form-builder-tools />
+		@if (selectedComponent) {
+			<app-form-builder-component-properties [component]="selectedComponent" />
+		}
+		<ngx-json-viewer></ngx-json-viewer>
+	</div>
+</div>

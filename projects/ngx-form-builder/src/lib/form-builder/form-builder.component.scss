@@ -1,0 +1,15 @@
+.builder {
+	display: flex;
+	height: 100%;
+}
+
+
+.right-content {
+	max-width: 25%;
+}
+
+.json {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}

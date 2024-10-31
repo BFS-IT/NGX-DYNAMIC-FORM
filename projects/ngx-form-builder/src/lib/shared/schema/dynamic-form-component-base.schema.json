@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://bfs.admin.ch/schemas/dynamic-form-component-base.schema.json",
+  "description": "Defines the base properties for a component",
+  "definitions": {
+    "DynamicFormComponentBase": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The unique ID of the component (handled by form builder)",
+          "type": "string"
+        },
+        "position": {
+          "description": "Define the position of component in the form",
+          "$ref": "dynamic-form-component-position.schema.json#/definitions/DynamicFormComponentPosition"
+        }
+      },
+      "required": [
+        "id",
+        "position"
+      ]
+    }
+  }
+}

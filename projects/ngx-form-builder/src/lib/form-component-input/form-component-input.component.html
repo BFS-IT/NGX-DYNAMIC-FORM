@@ -1,0 +1,8 @@
+<div class="element">
+	<mat-form-field>
+		@if (component.label) {
+			<mat-label>{{ component.label | multilingualText }}</mat-label>
+		}
+		<input #input [id]="component.id" [formControl]="formControl" [name]="component.id" [placeholder]="component.placeholder | multilingualText" matInput />
+	</mat-form-field>
+</div>

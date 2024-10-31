@@ -1,0 +1,13 @@
+.grid {
+	stroke: blue;
+	display: grid;
+	gap: 5px;
+	grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+	grid-auto-rows: max-content;
+	place-items: center;	
+}
+
+.element {
+	height: 100%;
+	width: 100%;
+}

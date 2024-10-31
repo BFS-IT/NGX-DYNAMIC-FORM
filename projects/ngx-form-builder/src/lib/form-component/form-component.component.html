@@ -1,0 +1,77 @@
+@if (mode === "build" || isTool) {
+	<div
+		[id]="element.id"
+		(dragenter)="dragEnter($event)"
+		(dragover)="dragOver($event)"
+		(drop)="drop($event)"
+		(dragstart)="startDrag($event)"
+		[draggable]="isComponent && isTool"
+		class="draggable-container"
+	>
+		<div [id]="element.id + '+1'" [ngStyle]="cellBaseStyle" class="element-container">
+			@if (element.component) {
+				@if (!isTool && (isSelected$ | async)) {
+					<div class="draggable-move" (dragstart)="startDrag($event)" [draggable]="isComponent">
+						<mat-icon>alternate-arrow</mat-icon>
+						<mat-icon>alternate-arrow</mat-icon>
+					</div>
+					<div class="delete" (click)="removeComponent()">
+						<mat-icon>trash</mat-icon>
+					</div>
+				}
+				@switch (element.component.component) {
+					@case (ComponentType.Text) {
+						<app-form-component-text [mode]="mode" [element]="element"></app-form-component-text>
+					}
+					@case (ComponentType.Input) {
+						<app-form-component-input [mode]="mode" [element]="element"></app-form-component-input>
+					}
+				}
+			} @else {
+				<app-form-component-empty></app-form-component-empty>
+			}
+
+			<div
+				[id]="elementOverlayId"
+				[class.as-component]="!isTool"
+				(mousedown)="selectComponent()"
+				(dblclick)="componentDoubleClick($event)"
+				[class.as-tool]="isTool"
+				[class.drop-allowed]="dropAllowed"
+				[class.movable]="isComponent"
+				[class.selected]="(isSelected$ | async) || dropAllowed"
+				[ngStyle]="cellSelectedBaseStyle"
+				class="selected-overlay"
+			>
+				@if (isSelected$ | async) {
+					@if (!isTool && isComponent) {
+						@if (canResize("up")) {
+							<div class="grip grip-top" (dragstart)="spanDragStart($event, 'up')" [draggable]="true"></div>
+						}
+						@if (canResize("right")) {
+							<div class="grip grip-right" (dragstart)="spanDragStart($event, 'right')" [draggable]="true"></div>
+						}
+						@if (canResize("down")) {
+							<div class="grip grip-bottom" (dragstart)="spanDragStart($event, 'down')" [draggable]="true"></div>
+						}
+						@if (canResize("left")) {
+							<div class="grip grip-left" (dragstart)="spanDragStart($event, 'left')" [draggable]="true"></div>
+						}
+					}
+				}
+			</div>
+		</div>
+	</div>
+}
+@if (mode === "render" && element.component && !isTool) {
+	<div [ngStyle]="cellBaseStyle">
+		@switch (element.component.component) {
+			@case (ComponentType.Text) {
+				<app-form-component-text [element]="element"></app-form-component-text>
+			}
+			@case (ComponentType.Input) {
+				<app-form-component-input [element]="element"></app-form-component-input>
+			}
+		}
+	</div>
+}
