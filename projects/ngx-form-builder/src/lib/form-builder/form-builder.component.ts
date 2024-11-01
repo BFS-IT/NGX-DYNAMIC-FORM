@@ -2,7 +2,7 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {DynamicFormService} from '../dynamic-form.service';
 import {DynamicForm, DynamicFormComponent, DynamicFormComposition, Media} from '../shared/dynamic-form';
 import {FormControl, Validators} from '@angular/forms';
-import {filter} from 'rxjs';
+import {BehaviorSubject, filter, Observable} from 'rxjs';
 import {MatTab, MatTabGroup, MatTabsModule} from '@angular/material/tabs';
 import {Clipboard} from '@angular/cdk/clipboard';
 import { MatLabel } from '@angular/material/form-field';
@@ -11,6 +11,9 @@ import { FormBuilderComponentPropertiesComponent } from './form-builder-componen
 import { MatIcon } from '@angular/material/icon';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { FormGridComponent } from '../form-grid/form-grid.component';
+import {MatDrawerContainer, MatDrawerContent, MatDrawer} from '@angular/material/sidenav';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'app-form-builder',
@@ -18,6 +21,7 @@ import { FormGridComponent } from '../form-grid/form-grid.component';
 	styleUrl: './form-builder.component.scss',
 	standalone: true,
 	imports: [
+		CommonModule,
 		MatLabel, 
 		MatTabsModule, 
 		FormBuilderToolsComponent, 
@@ -25,6 +29,10 @@ import { FormGridComponent } from '../form-grid/form-grid.component';
 		MatIcon, 
 		NgxJsonViewerModule, 
 		FormGridComponent,
+		MatDrawerContainer,
+		MatDrawerContent,
+		MatDrawer,
+		MatButtonModule
 	]
 })
 export class FormBuilderComponent implements OnInit, AfterViewInit {
@@ -35,6 +43,8 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
 	protected mainFormView: DynamicForm;
 	protected formNames: string[] = [];
 	protected formName = new FormControl<string>('', [Validators.required, Validators.minLength(3)]);
+	private openedSubject$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+	protected opened$: Observable<boolean>;
 
 	constructor(
 		private readonly dynamicFormService: DynamicFormService,
@@ -42,6 +52,7 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
 	) {
 		this.mainForm = this.dynamicFormService.emptyForm;
 		this.mainFormView = this.mainForm;
+		this.opened$ = this.openedSubject$.asObservable();
 	}
 
 	ngOnInit(): void {
@@ -92,5 +103,9 @@ export class FormBuilderComponent implements OnInit, AfterViewInit {
 
 	private gotoSettings() {
 		this.tabGroup.selectedIndex = 1;
+	}
+
+	protected toggleButton() {
+		this.openedSubject$.next(!this.openedSubject$.value);
 	}
 }

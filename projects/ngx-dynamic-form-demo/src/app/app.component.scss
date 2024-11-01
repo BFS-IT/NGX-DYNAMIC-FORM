@@ -1,3 +1,30 @@
-.main {
-    height: 100%;
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header, footer {
+    flex: 0 1 auto;
+}
+
+header {
+    padding: 12px 0;
+    display: flex;
+    justify-content: center;
+    border-bottom: solid;
+    border-color: rgba(95, 95, 95, 0.479);
+}
+
+footer {
+    padding: 12px 0;
+    display: flex;
+    justify-content: center;
+    border-top: solid;
+    border-color: rgba(95, 95, 95, 0.479);
+}
+
+.content {
+    flex: 1 1 auto;
+    overflow: auto;
 }

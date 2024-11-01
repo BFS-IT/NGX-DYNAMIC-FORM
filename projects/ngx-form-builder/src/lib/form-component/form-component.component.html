@@ -12,11 +12,10 @@
 			@if (element.component) {
 				@if (!isTool && (isSelected$ | async)) {
 					<div class="draggable-move" (dragstart)="startDrag($event)" [draggable]="isComponent">
-						<mat-icon>alternate-arrow</mat-icon>
-						<mat-icon>alternate-arrow</mat-icon>
+						<mat-icon>drag_indicator</mat-icon>
 					</div>
 					<div class="delete" (click)="removeComponent()">
-						<mat-icon>trash</mat-icon>
+						<mat-icon>delete</mat-icon>
 					</div>
 				}
 				@switch (element.component.component) {

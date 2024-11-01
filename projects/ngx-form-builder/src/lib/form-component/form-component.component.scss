@@ -1,8 +1,8 @@
 $grid-gap: 6px;
 $grip-size: 8px;
 $border-size: 2px;
-$color: red;
-$draggable-color: gray;
+$color: green;
+$draggable-color: rgb(0, 0, 0);
 
 .draggable-container {
 	position: relative;
@@ -12,29 +12,17 @@ $draggable-color: gray;
 	.draggable-move {
 		z-index: 2000;
 		position: absolute;
-		top: 10px;
-		left: 10px;
+		top: 12px;
+		right: 13px;
 		cursor: move !important;
 		color: $draggable-color;
-
-		mat-icon {
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 25px;
-			height: 25px;
-
-			&:last-child {
-				transform: rotate(90deg);
-			}
-		}
 	}
 
 	.delete {
 		z-index: 2000;
 		position: absolute;
 		top: 12px;
-		right: 13px;
+		right: 43px;
 		cursor: pointer;
 		color: $draggable-color;
 	}

@@ -10,7 +10,7 @@ import {UntypedFormGroup} from '@angular/forms';
  */
 export type FormMetaDataChangedEvent = {formMetaData: DynamicForm};
 
-const EMPTY_ROWS = 4;
+const EMPTY_ROWS = 12;
 
 @Component({
 	selector: 'app-form-grid',
