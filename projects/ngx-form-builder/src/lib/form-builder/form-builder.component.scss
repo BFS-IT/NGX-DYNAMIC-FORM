@@ -44,3 +44,20 @@ mat-drawer-content > .collapse-button-container {
 	background-color: #fff;
 	border-width: 1px;
 }
+
+.media-buttons {
+	display: flex;
+	flex-direction: row;
+	justify-content: end;
+	margin-bottom: 12px;
+	padding: 0 36px;
+	gap: 12px;
+}
+
+.media-buttons > * {
+	cursor: pointer;
+}
+
+.building-grid {
+	width: 100%;
+}

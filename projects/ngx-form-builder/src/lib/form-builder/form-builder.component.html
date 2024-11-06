@@ -24,14 +24,24 @@
 		</mat-tab-group>
 	</mat-drawer>
 	<mat-drawer-content>
-		<app-form-grid [form]="form" mode="build" [media]="media"></app-form-grid>
+		<div class="building-grid">
+			<div class="media-buttons">
+				<mat-icon (click)="setMedia(Media.Small)" [class.selected]="media === Media.Small"
+					matTooltip="Mobile screen" matTooltipPosition="above" fontIcon="smartphone"></mat-icon>
+				<mat-icon (click)="setMedia(Media.Medium)" [class.selected]="media === Media.Medium"
+					matTooltip="Tablet screen" matTooltipPosition="above" fontIcon="tablet_android" />
+				<mat-icon (click)="setMedia(Media.Large)" [class.selected]="media === Media.Large"
+					matTooltip="Desktop screen" matTooltipPosition="above" fontIcon="desktop_windows" />
+			</div>
+			<app-form-grid [form]="form" mode="build" [media]="media"></app-form-grid>
+		</div>
 		<div class="collapse-button-container">
 			<span class="collapse-button" (click)="toggleButton()">
 				@if(opened$ | async) {
-					<mat-icon>arrow_forward_ios_new</mat-icon>	
+				<mat-icon>arrow_forward_ios_new</mat-icon>
 				}
 				@else {
-					<mat-icon>arrow_back_ios_new</mat-icon>
+				<mat-icon>arrow_back_ios_new</mat-icon>
 				}
 			</span>
 		</div>

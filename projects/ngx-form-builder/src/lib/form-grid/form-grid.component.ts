@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DynamicForm, DynamicFormComposition, Media} from '../shared/dynamic-form';
 import {DynamicFormService, GRID_COL_WIDTH_LARGE, GridElement, RenderingMode} from '../dynamic-form.service';
 import {NgStyle} from '@angular/common';
@@ -17,7 +17,7 @@ const EMPTY_ROWS = 12;
 	templateUrl: './form-grid.component.html',
 	styleUrl: './form-grid.component.scss',
 	imports: [NgStyle, FormComponentComponent],
-	standalone: true
+	standalone: true,
 })
 export class FormGridComponent implements OnInit {
 	/**
@@ -97,9 +97,16 @@ export class FormGridComponent implements OnInit {
 		this.dynamicFormService.gridChanged$.subscribe(() => this.refreshGrid());
 	}
 
+	protected getMediaSizeInPx() {
+		if(this.media === Media.Small) return '360px'
+		if(this.media === Media.Medium) return '768px'
+		else return '100%';
+	}
+
 	protected buildStyle(): {[key: string]: string} {
 		return {
-			'grid-template-areas': this.gridTemplateAreas
+			'grid-template-areas': this.gridTemplateAreas,
+			'max-width': this.getMediaSizeInPx()
 		};
 	}
 

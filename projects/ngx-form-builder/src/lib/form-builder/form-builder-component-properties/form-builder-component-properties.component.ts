@@ -84,10 +84,7 @@ export class FormBuilderComponentPropertiesComponent implements OnInit {
 		this.updateEditableProperties();
 	}
 
-	constructor(private readonly dynamicFormService: DynamicFormService) {}
-	ngAfterViewInit(): void {
-		this.updateEditableProperties();
-	}
+	constructor(private readonly dynamicFormService: DynamicFormService) { }
 
 	ngOnInit(): void {
 		this.formGroup.valueChanges
@@ -96,6 +93,10 @@ export class FormBuilderComponentPropertiesComponent implements OnInit {
 				tap(() => Object.assign(this.component!, this.formGroup.getRawValue()))
 			)
 			.subscribe();
+
+		this.dynamicFormService.gridChanged$.subscribe(() => {
+			this.updateEditableProperties();
+		});
 	}
 
 	private updateEditableProperties() {
@@ -105,7 +106,7 @@ export class FormBuilderComponentPropertiesComponent implements OnInit {
 			const editableProperties = componentProperties?.properties ?? [];
 			editableProperties.sort((a, b) => (a.order ?? 100000) - (b.order ?? 100000));
 			this.buildForm(editableProperties);
-			
+
 			setTimeout(() => {
 				this.editableProperties = editableProperties;
 			}, 100)
@@ -122,7 +123,8 @@ export class FormBuilderComponentPropertiesComponent implements OnInit {
 		this.formGroup.controls = {};
 		editableProperties.forEach(property => {
 			const control = new UntypedFormControl(this.component?.[property.name]);
-			control.valueChanges.pipe(filter(v => v === null)).subscribe(() => control.setValue(undefined, {emitEvent: false}));
+			control.valueChanges.pipe(filter(v => v === null)).subscribe(() => control.setValue(undefined, { emitEvent: false }));
+			console.log(property.name)
 			this.formGroup.addControl(property.name.toString(), control);
 
 			control.addValidators(property.validators ?? []);
@@ -132,6 +134,5 @@ export class FormBuilderComponentPropertiesComponent implements OnInit {
 			}
 		});
 		this.formGroup.patchValue(this.component!);
-		console.log('tot', this.formGroup);
 	}
 }

@@ -14,6 +14,7 @@ import { FormGridComponent } from '../form-grid/form-grid.component';
 import {MatDrawerContainer, MatDrawerContent, MatDrawer} from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-form-builder',
@@ -32,7 +33,8 @@ import { CommonModule } from '@angular/common';
 		MatDrawerContainer,
 		MatDrawerContent,
 		MatDrawer,
-		MatButtonModule
+		MatButtonModule,
+		MatTooltipModule
 	]
 })
 export class FormBuilderComponent implements OnInit, AfterViewInit {
