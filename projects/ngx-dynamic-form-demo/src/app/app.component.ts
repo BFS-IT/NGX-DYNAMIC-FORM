@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormBuilderComponent } from "ngx-form-builder";
+import { DndGridComponent } from "ngx-form-builder";
+import { DragZoneComponent } from 'ngx-form-builder';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, FormBuilderComponent],
+  imports: [RouterOutlet, DndGridComponent, DragZoneComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

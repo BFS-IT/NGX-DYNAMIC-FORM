@@ -1,0 +1,17 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border: 1px solid black;
+    padding: 0.5em;
+
+    .draggable {
+        border: 1px solid black;
+        padding: 1em;
+        cursor: grab;
+
+        &.highlighted {
+            background-color: rgba(0, 0, 255, 0.2);
+        }
+    }
+}

@@ -1,0 +1,10 @@
+<div class="dnd-grid" #grid>
+    @for (cell of cells$ | async; track $index) {
+        <div class="cell"
+        [style.grid-row-start]="cell.rowPosition"
+        [style.grid-column-start]="cell.colPosition"
+        [class.highlighted]="cell.isHighlighted"
+        ndfDropzone>
+      </div>
+    }
+</div>

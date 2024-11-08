@@ -1,0 +1,32 @@
+$rowCount: 12;
+$colCount: 12;
+$gapSize: 12px;
+$validDropZoneColor: rgba(0, 255, 0, 0.2);
+$invalidDropZoneColor: rgba(255, 0, 0, 0.2);
+$widgetActiveColor: rgba(0, 0, 255, 0.2);
+$trashActiveColor: rgba(255, 128, 128, 0.2);
+
+.dnd-grid {
+  display: grid;
+  height: 100%;
+  border: 1px solid black;
+  padding: 12px;
+  gap: $gapSize;
+  grid-template-rows: repeat($rowCount, 1fr);
+  grid-template-columns: repeat($colCount, 1fr);
+}
+
+.cell {
+  border: 1px solid black;
+  grid-row-end: span 1;
+  grid-column-end: span 1;
+
+  &.highlighted {
+    background-color: $validDropZoneColor;
+  }
+}
+
+.valid-dropzone {
+  background-color: green;
+  border: 1px dashed !important;
+}
