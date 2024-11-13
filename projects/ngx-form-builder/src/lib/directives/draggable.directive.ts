@@ -1,4 +1,4 @@
-import { Directive, HostListener, ElementRef, Renderer2, Input, HostBinding } from '@angular/core';
+import { Directive, HostListener, Input, HostBinding } from '@angular/core';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
 export type EffectAllowed = 'move' | 'copy' | 'link' | 'none' | 'copyMove' | 'copyLink' | 'linkMove' | 'all' | "uninitialized";
@@ -22,16 +22,10 @@ export class DraggableDirective {
   }
 
   @HostListener('dragend', ['$event'])
-  onDragEndEvent(event: DragEvent) {
-    
-  }
+  onDragEndEvent(event: DragEvent) {}
 
   @HostListener('drag', ['$event'])
-  onDragEvent(event: DragEvent) {
-    
-  }
+  onDragEvent(event: DragEvent) {}
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {
-    
-  }
+  constructor() {}
 }

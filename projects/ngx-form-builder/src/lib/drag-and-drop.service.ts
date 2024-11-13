@@ -1,26 +1,6 @@
 import { ElementRef, Injectable, Renderer2} from '@angular/core';
 import { BehaviorSubject, Observable} from 'rxjs';
 
-export interface Position {
-  gridRowStart: number,
-  gridRowEnd: number,
-  gridColStart: number,
-  gridColEnd: number
-}
-
-export enum DragType {
-  create,
-  move,
-  resize
-}
-
-export interface DragSession {
-  type: DragType;
-  widget: Widget;
-  widgetHandleOffsetCenterX: number;
-  widgetHandleOffsetCenterY: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -72,6 +52,14 @@ export class DragAndDropService {
     this.widgets.next(updatedValue);
   }
 
+  /**
+   * Add given node to given reference element.
+   * This method isn't currently Angular way to archieve the behavior. 
+   * It should be rethink and deprecated in next version.
+   * @param renderer renderer that could not be imported directly in service.
+   * @param ref ElementRef in which add Node.
+   * @param node Node to add to ElementRef
+   */
   public AddContent(renderer: Renderer2, ref: ElementRef, node: Node) {
     const clone = node.cloneNode(true);
     clone.childNodes.forEach((node) => {
@@ -110,4 +98,11 @@ export interface Widget {
       gridColEnd: number
     }
   }
+}
+
+export interface Position {
+  gridRowStart: number,
+  gridRowEnd: number,
+  gridColStart: number,
+  gridColEnd: number
 }

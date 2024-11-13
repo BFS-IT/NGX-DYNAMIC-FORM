@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, ContentChild, ElementRef, TemplateRef, ViewChild } from '@angular/core';
-import { BehaviorSubject, filter, map, Observable, of, pairwise, scan, shareReplay, startWith } from 'rxjs';
-import { Box, Cell, Point } from '../models/grid.models';
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { DraggableDirective, EffectAllowed } from '../../directives/draggable.directive';
+import { Observable, of } from 'rxjs';
+import { Cell } from '../models/grid.models';
+import { AsyncPipe } from '@angular/common';
+import { DraggableDirective } from '../../directives/draggable.directive';
 import { DropZoneDirective } from '../../directives/drop-zone.directive';
 import { DragAndDropService, Widget } from '../../drag-and-drop.service';
 import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
@@ -14,7 +14,6 @@ import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
   templateUrl: './dnd-grid.component.html',
   styleUrl: './dnd-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
-  
 })
 export class DndGridComponent {
   @ViewChild('grid')
@@ -31,6 +30,10 @@ export class DndGridComponent {
     this.widgets$ = this.dndService.widgets$;
   }
 
+  /**
+   * Init cells for empty row.
+   * @returns Observable of Cell array.
+   */
   private initCells(): Observable<Cell[]> {
     return of(this.generateGrid());
   }

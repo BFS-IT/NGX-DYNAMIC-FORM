@@ -1,9 +1,5 @@
-import { Directive, HostListener, ElementRef, Renderer2, Output, EventEmitter, Input, HostBinding, Component, Type } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Directive, HostListener, ElementRef, Renderer2, Input, HostBinding } from '@angular/core';
 import { DragAndDropService, Position } from '../drag-and-drop.service';
-import { DndWrapperComponent } from '../dnd-wrapper/dnd-wrapper.component';
-import { DragZoneComponent } from '../drag-zone/drag-zone.component';
-import { DragZoneItemWrapperComponent } from '../drag-zone-item-wrapper/drag-zone-item-wrapper.component';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
 export type DropEffect = 'move' | 'copy' | 'link' | 'none';
@@ -13,8 +9,6 @@ export type DropEffect = 'move' | 'copy' | 'link' | 'none';
   standalone: true
 })
 export class DropZoneDirective {
-  @Output() dropped = new EventEmitter<string>();
-
   @Input()
   public DropEffect: DropEffect = 'copy';
 
@@ -79,13 +73,9 @@ export class DropZoneDirective {
         else {
           this.dndService.onAddDrop(id, position)
         }
-
-        this.dropped.emit("");
       }
     }
   }
 
-  constructor(private el: ElementRef, private renderer: Renderer2, private readonly dndService: DragAndDropService) {
-
-  }
+  constructor(private el: ElementRef, private renderer: Renderer2, private readonly dndService: DragAndDropService) {}
 }

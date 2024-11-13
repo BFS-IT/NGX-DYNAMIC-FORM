@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, Input, Renderer2, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/core';
 import { DragAndDropService, Widget } from '../drag-and-drop.service';
 
 @Component({

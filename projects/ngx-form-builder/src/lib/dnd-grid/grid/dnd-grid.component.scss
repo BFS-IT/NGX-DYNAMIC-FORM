@@ -2,9 +2,6 @@ $rowCount: 12;
 $colCount: 12;
 $gapSize: 12px;
 $validDropZoneColor: rgba(0, 255, 0, 0.5);
-$invalidDropZoneColor: rgba(255, 0, 0, 0.2);
-$widgetActiveColor: rgba(0, 0, 255, 0.2);
-$trashActiveColor: rgba(255, 128, 128, 0.2);
 
 .dnd-grid {
   display: grid;
@@ -29,8 +26,4 @@ $trashActiveColor: rgba(255, 128, 128, 0.2);
 .valid-dropzone {
   background-color: green;
   border: 1px dashed !important;
-}
-
-dnd-wrapper {
-  background-color: red;
 }
