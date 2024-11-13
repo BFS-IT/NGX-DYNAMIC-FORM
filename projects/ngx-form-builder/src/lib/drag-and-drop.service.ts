@@ -1,7 +1,12 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { Box } from './dnd-grid/models/grid.models';
-import { Widget } from './drag-zone/drag-zone.component';
+import { ElementRef, Injectable, Renderer2} from '@angular/core';
+import { BehaviorSubject, Observable} from 'rxjs';
+
+export interface Position {
+  gridRowStart: number,
+  gridRowEnd: number,
+  gridColStart: number,
+  gridColEnd: number
+}
 
 export enum DragType {
   create,
@@ -20,30 +25,58 @@ export interface DragSession {
   providedIn: 'root'
 })
 export class DragAndDropService {
-  private readonly currentSession: Subject<DragSession>;
-  public currentSession$: Observable<DragSession>;
+  private readonly widgets: BehaviorSubject<Widget[]>;
+  public widgets$: Observable<Widget[]>;
 
   constructor() {
-    this.currentSession = new Subject<DragSession>();
-    this.currentSession$ = this.currentSession.asObservable();
+    this.widgets = new BehaviorSubject<Widget[]>([]);
+    this.widgets$ = this.widgets.asObservable();
   }
 
-  public onDragStart(event: DragEvent, widget: Widget): void {
-    const { offsetX, offsetY } = this.calculateOffsetFromWidgetCenter(event);
+  /**
+   * Move widget wrapper using it's id.
+   * @param id widget wrapper id.
+   * @param position new position on the grid.
+   */
+  public onMoveDrop(id: string, position: Position) {
+    const currentValue = this.widgets.value;
+    const updatedValue = [...currentValue];
 
-    this.currentSession.next(
-      {
-        type: DragType.create,
-        widget,
-        widgetHandleOffsetCenterX: offsetX,
-        widgetHandleOffsetCenterY: offsetY
-      } as DragSession
-    );
+    for (let widget of currentValue) {
+      if (widget.id === id) {
+        widget.properties.position = position;
+        return;
+      }
+    }
+
+    this.widgets.next(updatedValue);
   }
 
-  public onDragEnd(event: DragEvent): void {
-    //event.preventDefault();
-    
+  /**
+   * Add a new widget wrapper at the divent position.
+   * @param position new position on the grid.
+   */
+  public onAddDrop(id: string, position: Position) {
+    const wrapperNode = document.getElementById(id) as HTMLElement;
+
+    const newWidget = {
+      id: 'widget-' + crypto.randomUUID(),
+      node: wrapperNode,
+      properties: {
+        position: position
+      }
+    } as Widget;
+
+    const currentValue = this.widgets.value;
+    const updatedValue = [...currentValue, newWidget];
+    this.widgets.next(updatedValue);
+  }
+
+  public AddContent(renderer: Renderer2, ref: ElementRef, node: Node) {
+    const clone = node.cloneNode(true);
+    clone.childNodes.forEach((node) => {
+      renderer.appendChild(ref, node)
+    })
   }
 
   /**
@@ -58,10 +91,23 @@ export class DragAndDropService {
   } {
     const target = event.target as Element;
     const { left, top, width, height } = target.getBoundingClientRect();
-    console.log({ left, top, width, height });
+
     return {
       offsetX: window.pageXOffset + left + width / 2 - event.pageX,
       offsetY: window.pageYOffset + top + height / 2 - event.pageY,
     };
+  }
+}
+
+export interface Widget {
+  id: string,
+  node: HTMLElement,
+  properties: {
+    position: {
+      gridRowStart: number,
+      gridColStart: number,
+      gridRowEnd: number,
+      gridColEnd: number
+    }
   }
 }

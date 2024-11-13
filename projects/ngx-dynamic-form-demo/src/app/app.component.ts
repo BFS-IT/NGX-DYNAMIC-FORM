@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { DndGridComponent } from "ngx-form-builder";
-import { DragZoneComponent } from 'ngx-form-builder';
+import { DndGridComponent, DragZoneComponent } from '../../../ngx-form-builder/src/public-api';
 
 @Component({
   selector: 'app-root',

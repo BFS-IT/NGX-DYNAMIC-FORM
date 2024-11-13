@@ -1,7 +1,7 @@
 $rowCount: 12;
 $colCount: 12;
 $gapSize: 12px;
-$validDropZoneColor: rgba(0, 255, 0, 0.2);
+$validDropZoneColor: rgba(0, 255, 0, 0.5);
 $invalidDropZoneColor: rgba(255, 0, 0, 0.2);
 $widgetActiveColor: rgba(0, 0, 255, 0.2);
 $trashActiveColor: rgba(255, 128, 128, 0.2);
@@ -10,10 +10,10 @@ $trashActiveColor: rgba(255, 128, 128, 0.2);
   display: grid;
   height: 100%;
   border: 1px solid black;
-  padding: 12px;
+  padding: 2em;
   gap: $gapSize;
-  grid-template-rows: repeat($rowCount, 1fr);
-  grid-template-columns: repeat($colCount, 1fr);
+  grid-template-rows: repeat($rowCount, minmax(0, 1fr));
+  grid-template-columns: repeat($colCount, minmax(0, 1fr));
 }
 
 .cell {
@@ -29,4 +29,8 @@ $trashActiveColor: rgba(255, 128, 128, 0.2);
 .valid-dropzone {
   background-color: green;
   border: 1px dashed !important;
+}
+
+dnd-wrapper {
+  background-color: red;
 }

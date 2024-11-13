@@ -1,21 +1,24 @@
 import { Directive, HostListener, ElementRef, Renderer2, Input, HostBinding } from '@angular/core';
 
-// https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
-export type DropEffect = 'move' | 'copy' | 'link' | 'none';
+// https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
+export type EffectAllowed = 'move' | 'copy' | 'link' | 'none' | 'copyMove' | 'copyLink' | 'linkMove' | 'all' | "uninitialized";
 
 @Directive({
   selector: '[ndfDrag]',
   standalone: true
 })
 export class DraggableDirective {
+  @Input() effectAllowed: EffectAllowed = 'copy';
+
   @HostBinding('attr.draggable') draggable = true;
   @HostBinding('class') classes = 'draggable';
   
   @HostListener('dragstart', ['$event'])
   onDragStartEvent(event: DragEvent) {
-    const id = (event.target as HTMLElement).id; 
-    event.dataTransfer?.setData('text/plain', id); 
-    event.dataTransfer?.setData('application/x-moz-node', (event.target as HTMLElement).outerHTML);
+    event.dataTransfer!.effectAllowed = this.effectAllowed;
+    const id = (event.currentTarget as HTMLElement).id;
+
+    event.dataTransfer?.setData('text/plain', id);
   }
 
   @HostListener('dragend', ['$event'])
