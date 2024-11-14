@@ -27,3 +27,8 @@ $validDropZoneColor: rgba(0, 255, 0, 0.5);
   background-color: green;
   border: 1px dashed !important;
 }
+
+.invalid-dropzone {
+  background-color: red;
+  border: 1px dashed;
+}

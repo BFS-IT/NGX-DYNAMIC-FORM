@@ -1,16 +1,20 @@
 <div class="dnd-grid" #grid>
   @for (cell of cells$ | async; track trackCell(cell)) {
-    <div class="cell" [style.grid-row-start]="cell.rowPosition" [style.grid-column-start]="cell.colPosition"
-      [class.highlighted]="cell.isHighlighted" ndfDropzone>
+    <div [attr.id]="'cell-'+ cell.rowPosition + '-' + cell.colPosition" class="cell" [style.grid-row-start]="cell.rowPosition" [style.grid-column-start]="cell.colPosition"
+      [class.high§lighted]="cell.isHighlighted" ndfDropzone>
     </div>
   }
   @for (widget of widgets$ | async; track trackWidget(widget)) {
     <dnd-wrapper class="widgetWrapper" [attr.id]="widget.id"
       [style.grid-row-start]="widget.properties.position.gridRowStart"
       [style.grid-column-start]="widget.properties.position.gridColStart"
-      [style.grid-row-end]="'span ' + widget.properties.position.gridRowEnd"
-      [style.grid-column-end]="'span ' + widget.properties.position.gridColEnd" ndfDrag effectAllowed="move"
-      [widget]="widget">
+      [style.grid-row-end]="widget.properties.position.gridRowEnd"
+      [style.grid-column-end]="widget.properties.position.gridColEnd" 
+      [rowSpan]="widget.properties.position.minimalSize.gridRowSpan"
+      [colSpan]="widget.properties.position.minimalSize.gridColSpan"
+      [widget]="widget"
+      ndfDrag 
+      effectAllowed="move">
     </dnd-wrapper>
   }
 </div>

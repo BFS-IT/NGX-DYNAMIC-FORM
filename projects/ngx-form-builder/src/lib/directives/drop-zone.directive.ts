@@ -1,5 +1,6 @@
-import { Directive, HostListener, ElementRef, Renderer2, Input, HostBinding } from '@angular/core';
+import { Directive, HostListener, ElementRef, Renderer2, Input, HostBinding, AfterViewInit, AfterContentInit } from '@angular/core';
 import { DragAndDropService, Position } from '../drag-and-drop.service';
+import { BehaviorSubject } from 'rxjs';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
 export type DropEffect = 'move' | 'copy' | 'link' | 'none';
@@ -8,7 +9,13 @@ export type DropEffect = 'move' | 'copy' | 'link' | 'none';
   selector: '[ndfDropzone]',
   standalone: true
 })
-export class DropZoneDirective {
+export class DropZoneDirective implements AfterContentInit {
+  private readonly VALID_DROPZONE: string = 'valid-dropzone';
+  private readonly INVALID_DROPZONE: string = 'invalid-dropzone';
+  private GRID_ROW_START!: number;
+  private GRID_COL_START!: number;
+  private involvedCellsDropzones: BehaviorSubject<HTMLElement[]> = new BehaviorSubject<HTMLElement[]>([]);
+
   @Input()
   public DropEffect: DropEffect = 'copy';
 
@@ -17,34 +24,40 @@ export class DropZoneDirective {
   @HostListener('dragover', ['$event'])
   onDragOver(event: DragEvent) {
     event.preventDefault();
-    this.renderer.addClass(this.el.nativeElement, 'valid-dropzone');
   }
 
-  @HostListener('dragleave')
-  onDragLeave() {
-    this.renderer.removeClass(this.el.nativeElement, 'valid-dropzone');
+  @HostListener('dragenter', ['$event'])
+  onDragEnter(event: DragEvent) {
+    event.preventDefault();
+
+    const position: Position = this.dndService.calculateDraggedPosition(this.GRID_ROW_START, this.GRID_COL_START);
+    const currentDropzone: HTMLElement = this.el.nativeElement;
+    this.involvedCellsDropzones.next(this.dndService.getCellsDropzones(this.renderer, currentDropzone))
+
+    if (this.dndService.isPositionAvailable(position)) {
+      this.addClassToCellsDropzone(this.involvedCellsDropzones.value, this.VALID_DROPZONE);
+    }
+    else {
+      this.addClassToCellsDropzone(this.involvedCellsDropzones.value, this.INVALID_DROPZONE);
+      event.dataTransfer!.dropEffect = 'none';
+    }
+  }
+
+  @HostListener('dragleave', ['$event'])
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+
+    this.removeClassToCellsDropzone(this.involvedCellsDropzones.value, this.VALID_DROPZONE);
+    this.removeClassToCellsDropzone(this.involvedCellsDropzones.value, this.INVALID_DROPZONE);
+    this.involvedCellsDropzones.next([]);
   }
 
   @HostListener('drop', ['$event'])
   onDrop(event: DragEvent) {
     event.preventDefault();
-    
-    const currentDropzone: HTMLElement = this.el.nativeElement;
-    const gridRowStart: number = parseInt(currentDropzone.style.gridRowStart);
-    let gridRowEnd: number = parseInt(currentDropzone.style.gridRowEnd);
-    const gridColStart: number = parseInt(currentDropzone.style.gridColumnStart);
-    let gridColEnd: number = parseInt(currentDropzone.style.gridColumnEnd);
 
-    // We should check if end positions are NaN because of cell that have no end positions.
-    if (Number.isNaN(gridRowEnd)) {
-      gridRowEnd = 1;
-    }
-    if (Number.isNaN(gridColEnd)) {
-      gridColEnd = 1;
-    }
-
-    let currentDropEffect: DropEffect = this.DropEffect;
-    if (event.dataTransfer) {
+    if (event.dataTransfer && !this.el.nativeElement.classList.contains(this.INVALID_DROPZONE)) {
+      let currentDropEffect: DropEffect = this.DropEffect;
       let effectAllowed = event.dataTransfer?.effectAllowed;
 
       if (effectAllowed === 'move') {
@@ -56,14 +69,7 @@ export class DropZoneDirective {
         currentDropEffect = 'copy';
       }
 
-      const position: Position = {
-        gridRowStart: gridRowStart,
-        gridRowEnd: gridRowEnd,
-        gridColStart: gridColStart,
-        gridColEnd: gridColEnd
-      };
-
-      this.renderer.removeClass(this.el.nativeElement, 'valid-dropzone');
+      const position: Position = this.dndService.calculateDraggedPosition(this.GRID_ROW_START, this.GRID_COL_START)
       const id = event.dataTransfer?.getData('text/plain');
 
       if (id) {
@@ -75,7 +81,42 @@ export class DropZoneDirective {
         }
       }
     }
+
+    this.removeClassToCellsDropzone(this.involvedCellsDropzones.value, this.VALID_DROPZONE);
+    this.removeClassToCellsDropzone(this.involvedCellsDropzones.value, this.INVALID_DROPZONE);
+    this.involvedCellsDropzones.next([]);
   }
 
-  constructor(private el: ElementRef, private renderer: Renderer2, private readonly dndService: DragAndDropService) {}
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private readonly dndService: DragAndDropService
+  ) { }
+
+  ngAfterContentInit(): void {
+    this.GRID_ROW_START = parseInt(this.el.nativeElement.style.gridRowStart);
+    this.GRID_COL_START = parseInt(this.el.nativeElement.style.gridColumnStart);
+  }
+
+  /**
+ * Add given class to given cells.
+ * @param cells cells on which add class.
+ * @param classToAdd class to add on cells.
+ */
+  private addClassToCellsDropzone(cells: HTMLElement[], classToAdd: string) {
+    for (let index = 0; index < cells.length; index++) {
+      this.renderer.addClass(cells[index], classToAdd);
+    }
+  }
+
+  /**
+   * remove class to given cells
+   * @param cells cells on which remove class.
+   * @param classToRemove class to remove from cells.
+   */
+  private removeClassToCellsDropzone(cells: HTMLElement[], classToRemove: string) {
+    for (let index = 0; index < cells.length; index++) {
+      this.renderer.removeClass(cells[index], classToRemove);
+    }
+  }
 }

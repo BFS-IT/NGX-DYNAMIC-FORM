@@ -1,4 +1,5 @@
 import { Directive, HostListener, Input, HostBinding } from '@angular/core';
+import { DragAndDropService, Position, Size } from '../drag-and-drop.service';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
 export type EffectAllowed = 'move' | 'copy' | 'link' | 'none' | 'copyMove' | 'copyLink' | 'linkMove' | 'all' | "uninitialized";
@@ -8,24 +9,42 @@ export type EffectAllowed = 'move' | 'copy' | 'link' | 'none' | 'copyMove' | 'co
   standalone: true
 })
 export class DraggableDirective {
-  @Input() effectAllowed: EffectAllowed = 'copy';
+  @Input('effectAllowed') effectAllowed: EffectAllowed = 'copy';
+  @Input('rowSpan') rowSpan: number = 1;
+  @Input('colSpan') colSpan: number = 1;
 
   @HostBinding('attr.draggable') draggable = true;
   @HostBinding('class') classes = 'draggable';
-  
+
   @HostListener('dragstart', ['$event'])
   onDragStartEvent(event: DragEvent) {
-    event.dataTransfer!.effectAllowed = this.effectAllowed;
     const id = (event.currentTarget as HTMLElement).id;
+
+    // Store current dragged element in service look service definition for further information.
+    this.dndService.onDragStart(
+      id,
+      {
+        minimalSize: {
+          gridRowSpan: this.rowSpan,
+          gridColSpan: this.colSpan
+        }
+      } as Size);
+
+    event.dataTransfer!.effectAllowed = this.effectAllowed;
+    
 
     event.dataTransfer?.setData('text/plain', id);
   }
 
   @HostListener('dragend', ['$event'])
-  onDragEndEvent(event: DragEvent) {}
+  onDragEndEvent(event: DragEvent) { 
+    event.preventDefault();
+  }
 
   @HostListener('drag', ['$event'])
-  onDragEvent(event: DragEvent) {}
+  onDragEvent(event: DragEvent) {
+    event.preventDefault();
+  }
 
-  constructor() {}
+  constructor(private readonly dndService: DragAndDropService) { }
 }

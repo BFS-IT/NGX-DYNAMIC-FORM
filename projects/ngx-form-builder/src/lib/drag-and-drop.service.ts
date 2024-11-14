@@ -1,5 +1,5 @@
-import { ElementRef, Injectable, Renderer2} from '@angular/core';
-import { BehaviorSubject, Observable} from 'rxjs';
+import { ElementRef, Injectable, Renderer2 } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +7,30 @@ import { BehaviorSubject, Observable} from 'rxjs';
 export class DragAndDropService {
   private readonly widgets: BehaviorSubject<Widget[]>;
   public widgets$: Observable<Widget[]>;
+  public currentDraggedSize: BehaviorSubject<Size>;
+  public currentDraggedId: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   constructor() {
     this.widgets = new BehaviorSubject<Widget[]>([]);
     this.widgets$ = this.widgets.asObservable();
+
+    this.currentDraggedSize = new BehaviorSubject<Size>({
+      minimalSize: {
+        gridRowSpan: 1,
+        gridColSpan: 1
+      }
+    } as Size);
+  }
+
+  /**
+   * Needed method to store current dragged element information.
+   * Due to the impossibility to access to Datatransfer data in dragenter event.
+   * https://html.spec.whatwg.org/multipage/dnd.html#the-drag-data-store
+   * @param size size data to calculate placeholder.
+   */
+  public onDragStart(id: string, size: Size) {
+    this.currentDraggedSize.next(size);
+    this.currentDraggedId.next(id)
   }
 
   /**
@@ -68,39 +88,101 @@ export class DragAndDropService {
   }
 
   /**
- * Calculate the offset the drag event
- * from the center of the element being dragged.
- * @param {DragEvent} event
- * @return {{ centerOffsetX: number, centerOffsetY: number }}
+ * Determines if a new position has any collision with an existing one.
+ * @param existingPosition existing position.
+ * @param newPosition new position.
+ * @returns true if any collisions on rows or columns else false.
  */
-  public calculateOffsetFromWidgetCenter(event: DragEvent): {
-    offsetX: number;
-    offsetY: number;
-  } {
-    const target = event.target as Element;
-    const { left, top, width, height } = target.getBoundingClientRect();
+  private isAnyCollision(existingPosition: Position, newPosition: Position): boolean {
+    const horizontalOverlap = newPosition.gridColStart < existingPosition.gridColEnd &&
+      newPosition.gridColEnd > existingPosition.gridColStart;
 
+    const verticalOverlap = newPosition.gridRowStart < existingPosition.gridRowEnd &&
+      newPosition.gridRowEnd > existingPosition.gridRowStart;
+
+    return horizontalOverlap && verticalOverlap;
+  }
+
+  /**
+   * Determines if a position is available on grid by checking if there is any collisions with existing widgets positions.
+   * @param position new position.
+   * @returns True if position is available on grid else false.
+   */
+  public isPositionAvailable(position: Position): boolean {
+    for (let index = 0; index < this.widgets.value.length; index++) {
+      if (this.widgets.value[index].id !== this.currentDraggedId.value && this.isAnyCollision(this.widgets.value[index].properties.position, position)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Get all dropzones cells involved in a potential drop action.
+   * @param renderer renderer that could not be imported directly in service.
+   * @param currentElement current dropzone on which drop should be fired.
+   * @returns HTMLElement array that represent full grid zone used on drop action.
+   */
+  public getCellsDropzones(renderer: Renderer2, currentElement: HTMLElement) {
+    const parent = renderer.parentNode(currentElement);
+
+    let cells: HTMLElement[] = [];
+    for (let colIndex = 0; colIndex < this.currentDraggedSize.value.minimalSize.gridColSpan; colIndex++) {
+      for (let rowIndex = 0; rowIndex < this.currentDraggedSize.value.minimalSize.gridRowSpan; rowIndex++) {
+        const rowIdPart = (rowIndex + parseInt(currentElement.style.gridRowStart));
+        const colIdPart = (colIndex + parseInt(currentElement.style.gridColumnStart));
+
+        let currentCell = parent.querySelector("#cell-" + rowIdPart + '-' + colIdPart) as HTMLElement;
+
+        if (currentCell) {
+          cells.push(currentCell);
+        }
+      }
+    }
+
+    cells.push(currentElement);
+    return cells;
+  }
+
+  /**
+   * Calculate dragged element position on grid.
+   * @param dropzone the dropzone element from which dragged should be droped. 
+   * @returns dragged position.
+   */
+  public calculateDraggedPosition(gridRowStart: number, gridColStart: number) {
     return {
-      offsetX: window.pageXOffset + left + width / 2 - event.pageX,
-      offsetY: window.pageYOffset + top + height / 2 - event.pageY,
+      gridRowStart: gridRowStart,
+      gridRowEnd: gridRowStart + this.currentDraggedSize.value.minimalSize.gridRowSpan,
+      gridColStart: gridColStart,
+      gridColEnd: gridColStart + this.currentDraggedSize.value.minimalSize.gridColSpan,
+      minimalSize: {
+        gridRowSpan: this.currentDraggedSize.value.minimalSize.gridRowSpan,
+        gridColSpan: this.currentDraggedSize.value.minimalSize.gridColSpan
+      }
     };
   }
 }
 
-export interface Widget {
+export interface Widget extends Properties {
   id: string,
   node: HTMLElement,
+}
+
+export interface Properties {
   properties: {
-    position: {
-      gridRowStart: number,
-      gridColStart: number,
-      gridRowEnd: number,
-      gridColEnd: number
-    }
+    position: Position
   }
 }
 
-export interface Position {
+export interface Size {
+  minimalSize: {
+    gridRowSpan: number,
+    gridColSpan: number
+  }
+}
+
+export interface Position extends Size {
   gridRowStart: number,
   gridRowEnd: number,
   gridColStart: number,

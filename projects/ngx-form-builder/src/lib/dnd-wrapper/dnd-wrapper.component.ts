@@ -17,6 +17,6 @@ export class DndWrapperComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dndService.AddContent(this.renderer, this.content.nativeElement, this.widget.node)
+    this.dndService.AddContent(this.renderer, this.content.nativeElement, this.widget.node);
   }
 }
