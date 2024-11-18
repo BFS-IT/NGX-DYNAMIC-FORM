@@ -2,15 +2,15 @@ import { ChangeDetectionStrategy, Component, ContentChild, ElementRef, TemplateR
 import { Observable, of } from 'rxjs';
 import { Cell } from '../models/grid.models';
 import { AsyncPipe } from '@angular/common';
-import { DraggableDirective } from '../../directives/draggable.directive';
 import { DropZoneDirective } from '../../directives/drop-zone.directive';
-import { DragAndDropService, Widget } from '../../drag-and-drop.service';
+import { Widget } from '../../drag-and-drop.service';
 import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
+import { GridService } from '../../grid.service';
 
 @Component({
   selector: 'dnd-grid',
   standalone: true,
-  imports: [AsyncPipe, DndWrapperComponent, DropZoneDirective, DraggableDirective],
+  imports: [AsyncPipe, DndWrapperComponent, DropZoneDirective],
   templateUrl: './dnd-grid.component.html',
   styleUrl: './dnd-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,9 +25,9 @@ export class DndGridComponent {
   public readonly cells$: Observable<Cell[]>;
   public readonly widgets$: Observable<Widget[]>;
 
-  constructor(private readonly dndService: DragAndDropService) {
+  constructor(private readonly gridService: GridService) {
     this.cells$ = this.initCells();
-    this.widgets$ = this.dndService.widgets$;
+    this.widgets$ = this.gridService.widgets$;
   }
 
   /**

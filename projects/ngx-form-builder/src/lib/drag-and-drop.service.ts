@@ -1,19 +1,15 @@
 import { ElementRef, Injectable, Renderer2 } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { GridService } from './grid.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DragAndDropService {
-  private readonly widgets: BehaviorSubject<Widget[]>;
-  public widgets$: Observable<Widget[]>;
   public currentDraggedSize: BehaviorSubject<Size>;
   public currentDraggedId: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  constructor() {
-    this.widgets = new BehaviorSubject<Widget[]>([]);
-    this.widgets$ = this.widgets.asObservable();
-
+  constructor(private readonly gridService: GridService) {
     this.currentDraggedSize = new BehaviorSubject<Size>({
       minimalSize: {
         gridRowSpan: 1,
@@ -39,17 +35,7 @@ export class DragAndDropService {
    * @param position new position on the grid.
    */
   public onMoveDrop(id: string, position: Position) {
-    const currentValue = this.widgets.value;
-    const updatedValue = [...currentValue];
-
-    for (let widget of currentValue) {
-      if (widget.id === id) {
-        widget.properties.position = position;
-        return;
-      }
-    }
-
-    this.widgets.next(updatedValue);
+    this.gridService.updateWidgetPosition(id, position);
   }
 
   /**
@@ -67,9 +53,7 @@ export class DragAndDropService {
       }
     } as Widget;
 
-    const currentValue = this.widgets.value;
-    const updatedValue = [...currentValue, newWidget];
-    this.widgets.next(updatedValue);
+    this.gridService.addWidget(newWidget);
   }
 
   /**
@@ -85,37 +69,6 @@ export class DragAndDropService {
     clone.childNodes.forEach((node) => {
       renderer.appendChild(ref, node)
     })
-  }
-
-  /**
- * Determines if a new position has any collision with an existing one.
- * @param existingPosition existing position.
- * @param newPosition new position.
- * @returns true if any collisions on rows or columns else false.
- */
-  private isAnyCollision(existingPosition: Position, newPosition: Position): boolean {
-    const horizontalOverlap = newPosition.gridColStart < existingPosition.gridColEnd &&
-      newPosition.gridColEnd > existingPosition.gridColStart;
-
-    const verticalOverlap = newPosition.gridRowStart < existingPosition.gridRowEnd &&
-      newPosition.gridRowEnd > existingPosition.gridRowStart;
-
-    return horizontalOverlap && verticalOverlap;
-  }
-
-  /**
-   * Determines if a position is available on grid by checking if there is any collisions with existing widgets positions.
-   * @param position new position.
-   * @returns True if position is available on grid else false.
-   */
-  public isPositionAvailable(position: Position): boolean {
-    for (let index = 0; index < this.widgets.value.length; index++) {
-      if (this.widgets.value[index].id !== this.currentDraggedId.value && this.isAnyCollision(this.widgets.value[index].properties.position, position)) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   /**

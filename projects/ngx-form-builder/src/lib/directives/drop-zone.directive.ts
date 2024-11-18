@@ -1,6 +1,7 @@
 import { Directive, HostListener, ElementRef, Renderer2, Input, HostBinding, AfterViewInit, AfterContentInit } from '@angular/core';
 import { DragAndDropService, Position } from '../drag-and-drop.service';
 import { BehaviorSubject } from 'rxjs';
+import { GridService } from '../grid.service';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/dropEffect
 export type DropEffect = 'move' | 'copy' | 'link' | 'none';
@@ -34,7 +35,7 @@ export class DropZoneDirective implements AfterContentInit {
     const currentDropzone: HTMLElement = this.el.nativeElement;
     this.involvedCellsDropzones.next(this.dndService.getCellsDropzones(this.renderer, currentDropzone))
 
-    if (this.dndService.isPositionAvailable(position)) {
+    if (this.gridService.isPositionAvailable(this.dndService.currentDraggedId.value, position)) {
       this.addClassToCellsDropzone(this.involvedCellsDropzones.value, this.VALID_DROPZONE);
     }
     else {
@@ -71,7 +72,7 @@ export class DropZoneDirective implements AfterContentInit {
 
       const position: Position = this.dndService.calculateDraggedPosition(this.GRID_ROW_START, this.GRID_COL_START)
       const id = event.dataTransfer?.getData('text/plain');
-
+      
       if (id) {
         if (currentDropEffect === 'move') {
           this.dndService.onMoveDrop(id, position)
@@ -90,7 +91,8 @@ export class DropZoneDirective implements AfterContentInit {
   constructor(
     private el: ElementRef,
     private renderer: Renderer2,
-    private readonly dndService: DragAndDropService
+    private readonly dndService: DragAndDropService,
+    private readonly gridService: GridService
   ) { }
 
   ngAfterContentInit(): void {
@@ -98,7 +100,7 @@ export class DropZoneDirective implements AfterContentInit {
     this.GRID_COL_START = parseInt(this.el.nativeElement.style.gridColumnStart);
   }
 
-  /**
+/**
  * Add given class to given cells.
  * @param cells cells on which add class.
  * @param classToAdd class to add on cells.

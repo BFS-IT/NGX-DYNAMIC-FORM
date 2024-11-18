@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input, HostBinding } from '@angular/core';
+import { Directive, HostListener, Input, HostBinding, Renderer2, ElementRef } from '@angular/core';
 import { DragAndDropService, Position, Size } from '../drag-and-drop.service';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
@@ -18,8 +18,11 @@ export class DraggableDirective {
 
   @HostListener('dragstart', ['$event'])
   onDragStartEvent(event: DragEvent) {
-    const id = (event.currentTarget as HTMLElement).id;
-
+    // actually we have to get parent when moving because of html structure of components
+    const id: string = this.effectAllowed === 'move' ?
+      (this.renderer.parentNode(this.renderer.parentNode(this.el.nativeElement)) as HTMLElement).id :
+      (event.currentTarget as HTMLElement).id;
+      
     // Store current dragged element in service look service definition for further information.
     this.dndService.onDragStart(
       id,
@@ -31,13 +34,12 @@ export class DraggableDirective {
       } as Size);
 
     event.dataTransfer!.effectAllowed = this.effectAllowed;
-    
 
     event.dataTransfer?.setData('text/plain', id);
   }
 
   @HostListener('dragend', ['$event'])
-  onDragEndEvent(event: DragEvent) { 
+  onDragEndEvent(event: DragEvent) {
     event.preventDefault();
   }
 
@@ -46,5 +48,5 @@ export class DraggableDirective {
     event.preventDefault();
   }
 
-  constructor(private readonly dndService: DragAndDropService) { }
+  constructor(private el: ElementRef, private renderer: Renderer2, private readonly dndService: DragAndDropService) { }
 }
