@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ContentChild, ElementRef, TemplateRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, TemplateRef, ViewChild } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Cell } from '../models/grid.models';
 import { AsyncPipe } from '@angular/common';
@@ -6,16 +6,18 @@ import { DropZoneDirective } from '../../directives/drop-zone.directive';
 import { Widget } from '../../drag-and-drop.service';
 import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
 import { GridService } from '../../grid.service';
+import { ResizableDirective } from '../../directives/resizable.directive';
+import { ResizeService } from '../../resize.service';
 
 @Component({
   selector: 'dnd-grid',
   standalone: true,
-  imports: [AsyncPipe, DndWrapperComponent, DropZoneDirective],
+  imports: [AsyncPipe, DndWrapperComponent, DropZoneDirective, ResizableDirective],
   templateUrl: './dnd-grid.component.html',
   styleUrl: './dnd-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DndGridComponent {
+export class DndGridComponent implements AfterViewInit{
   @ViewChild('grid')
   private readonly grid!: ElementRef;
 
@@ -28,6 +30,10 @@ export class DndGridComponent {
   constructor(private readonly gridService: GridService) {
     this.cells$ = this.initCells();
     this.widgets$ = this.gridService.widgets$;
+  }
+
+  ngAfterViewInit(): void {
+    this.gridService.currentGrid = this.grid;
   }
 
   /**

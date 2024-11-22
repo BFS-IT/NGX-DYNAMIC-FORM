@@ -1,23 +1,31 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Position, Widget } from './drag-and-drop.service';
+import { Position, Size, Widget } from './drag-and-drop.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GridService {
+  public currentGrid!: ElementRef;
+  // Max span is number of row/col + 1
+  private readonly GRID_ROW_MAX_SPAN = 13;
+  private readonly GRID_COL_MAX_SPAN = 13;
+
   public readonly widgets: BehaviorSubject<Widget[]>;
   public widgets$: Observable<Widget[]>;
 
-  constructor() {
+  constructor(private ngZone: NgZone) {
     this.widgets = new BehaviorSubject<Widget[]>([]);
     this.widgets$ = this.widgets.asObservable();
+  }
+
+  getWidgetById(id: string): Widget | undefined {
+    return this.widgets.value.find((widget) => widget.id === id);
   }
 
   updateWidgetPosition(id: string, newPosition: Position) {
     const currentValue = this.widgets.value;
     const updatedValue = [...currentValue];
-    
 
     for (let widget of currentValue) {
       if (widget.id === id) {
@@ -42,6 +50,12 @@ export class GridService {
  * @returns True if position is available on grid else false.
  */
   public isPositionAvailable(id: string, position: Position): boolean {
+    if (position.gridColStart < 0 ||
+        position.gridRowStart < 0 ||
+        position.gridColEnd > this.GRID_COL_MAX_SPAN ||
+        position.gridRowEnd > this.GRID_ROW_MAX_SPAN) {
+      return false;
+    }
     let currentWidget: Widget;
     for (let index = 0; index < this.widgets.value.length; index++) {
       currentWidget = this.widgets.value[index];
@@ -69,3 +83,4 @@ export class GridService {
     return horizontalOverlap && verticalOverlap;
   }
 }
+

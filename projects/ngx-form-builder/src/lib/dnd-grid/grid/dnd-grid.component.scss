@@ -11,6 +11,7 @@ $validDropZoneColor: rgba(0, 255, 0, 0.5);
   gap: $gapSize;
   grid-template-rows: repeat($rowCount, minmax(0, 1fr));
   grid-template-columns: repeat($colCount, minmax(0, 1fr));
+  position: relative;
 }
 
 .cell {

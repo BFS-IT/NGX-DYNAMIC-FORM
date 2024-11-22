@@ -1,5 +1,6 @@
 import { Directive, HostListener, Input, HostBinding, Renderer2, ElementRef } from '@angular/core';
 import { DragAndDropService, Position, Size } from '../drag-and-drop.service';
+import { GridService } from '../grid.service';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
 export type EffectAllowed = 'move' | 'copy' | 'link' | 'none' | 'copyMove' | 'copyLink' | 'linkMove' | 'all' | "uninitialized";
@@ -22,16 +23,9 @@ export class DraggableDirective {
     const id: string = this.effectAllowed === 'move' ?
       (this.renderer.parentNode(this.renderer.parentNode(this.el.nativeElement)) as HTMLElement).id :
       (event.currentTarget as HTMLElement).id;
-      
+
     // Store current dragged element in service look service definition for further information.
-    this.dndService.onDragStart(
-      id,
-      {
-        minimalSize: {
-          gridRowSpan: this.rowSpan,
-          gridColSpan: this.colSpan
-        }
-      } as Size);
+    this.dndService.onDragStart(id, this.rowSpan, this.colSpan);
 
     event.dataTransfer!.effectAllowed = this.effectAllowed;
 

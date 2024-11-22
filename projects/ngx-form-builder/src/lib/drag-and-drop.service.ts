@@ -1,6 +1,7 @@
 import { ElementRef, Injectable, Renderer2 } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { GridService } from './grid.service';
+import { EffectAllowed } from './directives/draggable.directive';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,10 @@ export class DragAndDropService {
       minimalSize: {
         gridRowSpan: 1,
         gridColSpan: 1
+      },
+      current: {
+        gridColSpan: 1,
+        gridRowSpan: 1
       }
     } as Size);
   }
@@ -22,11 +27,24 @@ export class DragAndDropService {
    * Needed method to store current dragged element information.
    * Due to the impossibility to access to Datatransfer data in dragenter event.
    * https://html.spec.whatwg.org/multipage/dnd.html#the-drag-data-store
-   * @param size size data to calculate placeholder.
+   * @param id item id that start a drag.
+   * @param gridRowSpan row span of the current element.
+   * @param gridColSpan col span of the current element.
    */
-  public onDragStart(id: string, size: Size) {
-    this.currentDraggedSize.next(size);
-    this.currentDraggedId.next(id)
+  public onDragStart(id: string, gridRowSpan: number, gridColSpan: number) {
+    const minimalSize = { gridRowSpan: gridRowSpan, gridColSpan: gridColSpan };
+
+    // As long as we don't know at this moment if we are moving or copying an element. Should be refactored.
+    const widget: Widget | undefined = this.gridService.getWidgetById(id);
+    const currentSize: Size = widget ?
+      { ...widget?.properties.size } :
+      {
+        minimalSize: minimalSize,
+        current: minimalSize
+      };
+
+    this.currentDraggedId.next(id);
+    this.currentDraggedSize.next(currentSize);
   }
 
   /**
@@ -49,7 +67,8 @@ export class DragAndDropService {
       id: 'widget-' + crypto.randomUUID(),
       node: wrapperNode,
       properties: {
-        position: position
+        position: position,
+        size: this.currentDraggedSize.value
       }
     } as Widget;
 
@@ -81,8 +100,8 @@ export class DragAndDropService {
     const parent = renderer.parentNode(currentElement);
 
     let cells: HTMLElement[] = [];
-    for (let colIndex = 0; colIndex < this.currentDraggedSize.value.minimalSize.gridColSpan; colIndex++) {
-      for (let rowIndex = 0; rowIndex < this.currentDraggedSize.value.minimalSize.gridRowSpan; rowIndex++) {
+    for (let colIndex = 0; colIndex < this.currentDraggedSize.value.current.gridColSpan; colIndex++) {
+      for (let rowIndex = 0; rowIndex < this.currentDraggedSize.value.current.gridRowSpan; rowIndex++) {
         const rowIdPart = (rowIndex + parseInt(currentElement.style.gridRowStart));
         const colIdPart = (colIndex + parseInt(currentElement.style.gridColumnStart));
 
@@ -109,11 +128,7 @@ export class DragAndDropService {
       gridRowEnd: gridRowStart + this.currentDraggedSize.value.minimalSize.gridRowSpan,
       gridColStart: gridColStart,
       gridColEnd: gridColStart + this.currentDraggedSize.value.minimalSize.gridColSpan,
-      minimalSize: {
-        gridRowSpan: this.currentDraggedSize.value.minimalSize.gridRowSpan,
-        gridColSpan: this.currentDraggedSize.value.minimalSize.gridColSpan
-      }
-    };
+    } as Position;
   }
 }
 
@@ -125,17 +140,23 @@ export interface Widget extends Properties {
 export interface Properties {
   properties: {
     position: Position
+    size: Size
   }
 }
 
 export interface Size {
+  current: {
+    gridRowSpan: number,
+    gridColSpan: number
+  },
   minimalSize: {
     gridRowSpan: number,
     gridColSpan: number
   }
+
 }
 
-export interface Position extends Size {
+export interface Position {
   gridRowStart: number,
   gridRowEnd: number,
   gridColStart: number,
