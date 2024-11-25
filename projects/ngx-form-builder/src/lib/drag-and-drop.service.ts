@@ -2,6 +2,7 @@ import { ElementRef, Injectable, Renderer2 } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { GridService } from './grid.service';
 import { EffectAllowed } from './directives/draggable.directive';
+import { Position, Size, Widget } from './models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ export class DragAndDropService {
     // As long as we don't know at this moment if we are moving or copying an element. Should be refactored.
     const widget: Widget | undefined = this.gridService.getWidgetById(id);
     const currentSize: Size = widget ?
-      { ...widget?.properties.size } :
+      widget?.properties.size :
       {
         minimalSize: minimalSize,
         current: minimalSize
@@ -62,7 +63,8 @@ export class DragAndDropService {
    */
   public onAddDrop(id: string, position: Position) {
     const wrapperNode = document.getElementById(id) as HTMLElement;
-
+    console.log("drop")
+    console.log(this.currentDraggedSize.value)
     const newWidget = {
       id: 'widget-' + crypto.randomUUID(),
       node: wrapperNode,
@@ -83,7 +85,7 @@ export class DragAndDropService {
    * @param ref ElementRef in which add Node.
    * @param node Node to add to ElementRef
    */
-  public AddContent(renderer: Renderer2, ref: ElementRef, node: Node) {
+  public addContent(renderer: Renderer2, ref: ElementRef, node: Node) {
     const clone = node.cloneNode(true);
     clone.childNodes.forEach((node) => {
       renderer.appendChild(ref, node)
@@ -130,35 +132,4 @@ export class DragAndDropService {
       gridColEnd: gridColStart + this.currentDraggedSize.value.minimalSize.gridColSpan,
     } as Position;
   }
-}
-
-export interface Widget extends Properties {
-  id: string,
-  node: HTMLElement,
-}
-
-export interface Properties {
-  properties: {
-    position: Position
-    size: Size
-  }
-}
-
-export interface Size {
-  current: {
-    gridRowSpan: number,
-    gridColSpan: number
-  },
-  minimalSize: {
-    gridRowSpan: number,
-    gridColSpan: number
-  }
-
-}
-
-export interface Position {
-  gridRowStart: number,
-  gridRowEnd: number,
-  gridColStart: number,
-  gridColEnd: number
 }

@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { Cell } from '../models/grid.models';
 import { AsyncPipe } from '@angular/common';
 import { DropZoneDirective } from '../../directives/drop-zone.directive';
-import { Widget } from '../../drag-and-drop.service';
+import { Widget } from '../../models/models';
 import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
 import { GridService } from '../../grid.service';
 import { ResizableDirective } from '../../directives/resizable.directive';

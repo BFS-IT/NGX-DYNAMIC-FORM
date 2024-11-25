@@ -1,6 +1,6 @@
 import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, Renderer2 } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
-import { Position } from '../drag-and-drop.service';
+import { Position } from '../models/models';
 import { ResizeService } from '../resize.service';
 import { setThrowInvalidWriteToSignalError } from '@angular/core/primitives/signals';
 
@@ -52,15 +52,6 @@ export class PlaceholderComponent {
       this.renderer.setStyle(self, 'left', `${resizeDimensions.newLeft}px`);
       this.renderer.setStyle(self, 'top', `${resizeDimensions.newTop}px`);
     });
-  }
-
-  /**
-   * On point up event, it call onResizeEndEvent from service.
-   * @param event DOM binded event.
-   */
-  onPointerUp(event: PointerEvent) {
-    event.preventDefault();
-    this.resizeService.onResizeEndEvent();
   }
 
   /**

@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Directive, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2, ViewChild } from '@angular/core';
-import { DragAndDropService, Widget } from '../drag-and-drop.service';
+import { DragAndDropService } from '../drag-and-drop.service';
+import { Widget } from '../models/models';
 import { DraggableDirective } from '../directives/draggable.directive';
 
 @Component({
@@ -18,6 +19,6 @@ export class DndWrapperComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.dndService.AddContent(this.renderer, this.content.nativeElement, this.widget.node);
+    this.dndService.addContent(this.renderer, this.content.nativeElement, this.widget.node);
   }
 }

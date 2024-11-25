@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Renderer2, HostListener, AfterContentInit, Output, Input, EventEmitter, ViewContainerRef, ComponentRef } from '@angular/core';
-import { DragAndDropService, Position, Size, Widget } from '../drag-and-drop.service';
+import { Position, Size, Widget } from '../models/models';
 import { GridService } from '../grid.service';
 import { ResizeService, StartDimensions } from '../resize.service';
 import { PlaceholderComponent, ResizeDirection, ResizeEvent } from '../placeholder/placeholder.component';
@@ -40,12 +40,20 @@ export class ResizableDirective implements AfterContentInit {
     });
   }
 
+  /**
+   * Set widget that init a resize in resize service.
+   * @param id Host node id.
+   * @param startDimensions Starting node dimensions provided by host.
+   */
   private onResizeStart(id: string, startDimensions: StartDimensions) {
     this.resizeService.initializeWidgetResizing(id, startDimensions);
   }
   
+  /**
+   * Set updated widget that inited a resize  in resize service.
+   * @param id Host node id.
+   */
   private onResizeEnd(id: string) {
     this.resizeService.endWidgetResizing(id);
-    this.vcr.remove();
   }
 }

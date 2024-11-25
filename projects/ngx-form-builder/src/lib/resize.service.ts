@@ -1,7 +1,7 @@
 import { ElementRef, Injectable } from '@angular/core';
-import { DragAndDropService, Position, Size, Widget } from './drag-and-drop.service';
+import { Position, Size, Widget } from './models/models';
 import { GridService } from './grid.service';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { ResizeDirection, ResizeEvent, StartPoint } from './placeholder/placeholder.component';
 
 export interface ResizeDimensions {
@@ -30,16 +30,36 @@ export class ResizeService {
   private readonly isResizing: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public isResizing$ = this.isResizing.asObservable();
 
-  public readonly currentResizingWidget: ReplaySubject<Widget> = new ReplaySubject<Widget>(1);
+  private readonly currentResizingWidget: ReplaySubject<Widget> = new ReplaySubject<Widget>(1);
   public currentResizingWidget$: Observable<Widget> = this.currentResizingWidget.asObservable();
 
   public readonly resizeDimensions: ReplaySubject<ResizeDimensions> = new ReplaySubject<ResizeDimensions>(1);
   public resizeDimensions$: Observable<ResizeDimensions> = this.resizeDimensions.asObservable();
 
-  constructor(private readonly gridService: GridService) { 
+  constructor(private readonly gridService: GridService) {
     this.resizeDimensions.subscribe((value) => {
       this.newDimension = value;
     });
+  }
+
+  /**
+   * OnPointerUp event listener function to manage stop resizing on grid.
+   * @param event PointerEvent emited by grid.
+   */
+  public onPointerUp = (event: PointerEvent) => {
+    event.preventDefault();
+    this.gridService.currentGrid.nativeElement.removeEventListener("pointermove", this.onPointerMove);
+    this.gridService.currentGrid.nativeElement.removeEventListener("pointerup", this.onPointerUp);
+    this.isResizing.next(false);
+  }
+
+  /**
+ * OnPointerMove event to manage resizing of placeholder on grid.
+ * @param event PointerEvent emited by grid.
+ */
+  private onPointerMove = (event: PointerEvent) => {
+    event.preventDefault();
+    this.handleResize(event.pageX, event.pageY);
   }
 
   /**
@@ -47,28 +67,18 @@ export class ResizeService {
    * @param resizeEvent ResizeEvent data.
    */
   public onResizeStartEvent(resizeEvent: ResizeEvent) {
+    this.gridService.currentGrid.nativeElement.addEventListener("pointermove", this.onPointerMove);
+    this.gridService.currentGrid.nativeElement.addEventListener("pointerup", this.onPointerUp);
     this.startPoint = resizeEvent.startPoint;
     this.direction = resizeEvent.direction;
-    this.gridService.currentGrid.nativeElement.addEventListener('pointermove', this.onPointerMove);
-    this.gridService.currentGrid.nativeElement.addEventListener('pointerup', (event: PointerEvent) => {
-      const childElement = document.getElementById('child')
-    });
+
     this.isResizing.next(true);
   }
 
   /**
-   * Called when placehoder end resizing on pointer up event.
-   */
-  public onResizeEndEvent() {
-    this.gridService.currentGrid.nativeElement.removeEventListener('pointermove', this.onPointerMove);
-    this.isResizing.next(false);
-  }
-
-  /**
-   * Called by component that is currently resized to set current widget, his starting dimensions and his onPointerMove event.
+   * Called by component that is currently resized to set current widget and his starting dimensions.
    * @param id Component id linked to a specific widget in stored widgets.
    * @param startDimensions Component starting dimensions.
-   * @param onPointerMove DOM event to add to grid listeners.
    */
   public initializeWidgetResizing(id: string, startDimensions: StartDimensions) {
     this.startDimensions = startDimensions;
@@ -79,21 +89,13 @@ export class ResizeService {
     }
   }
 
-  private onPointerMove = (event: PointerEvent) => {
-    this.handleResize(event.pageX, event.pageY);
-    event.preventDefault();
-  }
-
   /**
    * Called by component that is currently resized to end his resizing.
    * It includes to remove pointer move listener on grid, update position of widget and set new current widget.
    * @param id Component id linked to a specific widget in stored widgets.
-   * @param onPointerMove DOM event to remove from grid listeners.
    */
   public endWidgetResizing(id: string) {
-
-    this.updateWidgetPosition(id,)
-
+    this.updateWidgetPosition(id)
     const widget = this.gridService.getWidgetById(id);
 
     if (widget) {
@@ -103,18 +105,20 @@ export class ResizeService {
 
   /**
    * Calcule and update current widget position and update current widget using grid service.
-   * @param id 
+   * @param id Component id linked to a specific widget in stored widgets.
    */
   public updateWidgetPosition(id: string) {
-    const newPosition = this.calculateNewPosition(id);
+    const newPositionProperties = this.calculateResizePosition(id);
+    const newPosition = newPositionProperties.position;
+    const newSize = newPositionProperties.size;
 
     if (this.gridService.isPositionAvailable(id, newPosition)) {
-      this.gridService.updateWidgetPosition(id, newPosition);
+      this.gridService.updateWidgetPositionAndSize(id, newPosition, newSize);
     }
   }
 
   /**
-   * Called by component to calculate and update redimensionned size on pointer move event.
+   * Called by onPointerMove grid event to calculate and update redimensionned size on pointer move event.
    * @param currentX Current pointer X position.
    * @param currentY Current pointer Y position.
    */
@@ -126,7 +130,7 @@ export class ResizeService {
 
     let deltaX = currentX - this.startPoint.startX;
     let deltaY = currentY - this.startPoint.startY;
-
+    
     switch (this.direction) {
       case 'RIGHT':
         newWidth = this.startDimensions.offsetWidth + deltaX;
@@ -154,17 +158,26 @@ export class ResizeService {
     this.resizeDimensions.next(resizeDimensions);
   }
 
-  public calculateNewPosition(id: string): Position {
+  /**
+   * Calculate and return an object containing position and size.
+   * Not Typescript ideomatic way should be refactored.
+   * @param id Component id linked to a specific widget in stored widgets. 
+   * @returns {Position, Size} object
+   */
+  public calculateResizePosition(id: string): { position: Position, size: Size } {
     const wid = this.gridService.getWidgetById(id);
 
-    const newPosition = {
+    let newPosition = {
       gridRowStart: wid!.properties.position.gridRowStart,
       gridRowEnd: wid!.properties.position.gridRowEnd,
       gridColStart: wid?.properties.position.gridColStart,
       gridColEnd: wid?.properties.position.gridColEnd,
     } as Position;
 
-    const newSize = { ...wid?.properties.size } as Size;
+    let newSize = {
+      current: wid?.properties.size.current,
+      minimalSize: wid?.properties.size.minimalSize
+    } as Size;
 
     const gridCellWidth = this.startDimensions.offsetWidth / newSize.minimalSize.gridColSpan;
     const gridCellHeight = this.startDimensions.offsetHeight / newSize.minimalSize.gridRowSpan;
@@ -189,6 +202,6 @@ export class ResizeService {
       newSize.current.gridColSpan += colSpanToAdd;
     }
 
-    return newPosition;
+    return { position: newPosition, size: newSize };
   }
 }

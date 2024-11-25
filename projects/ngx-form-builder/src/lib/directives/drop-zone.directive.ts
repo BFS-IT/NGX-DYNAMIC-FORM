@@ -1,5 +1,6 @@
 import { Directive, HostListener, ElementRef, Renderer2, Input, HostBinding, AfterViewInit, AfterContentInit } from '@angular/core';
-import { DragAndDropService, Position } from '../drag-and-drop.service';
+import { DragAndDropService } from '../drag-and-drop.service';
+import { Position } from '../models/models';
 import { BehaviorSubject } from 'rxjs';
 import { GridService } from '../grid.service';
 

@@ -1,6 +1,6 @@
 import { ElementRef, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Position, Size, Widget } from './drag-and-drop.service';
+import { Position, Size, Widget } from './models/models';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +14,25 @@ export class GridService {
   public readonly widgets: BehaviorSubject<Widget[]>;
   public widgets$: Observable<Widget[]>;
 
-  constructor(private ngZone: NgZone) {
+  constructor() {
     this.widgets = new BehaviorSubject<Widget[]>([]);
     this.widgets$ = this.widgets.asObservable();
   }
 
+  /**
+   * get widget by id.
+   * @param id Component linked id.
+   * @returns Widget if it exists else undefined.
+   */
   getWidgetById(id: string): Widget | undefined {
     return this.widgets.value.find((widget) => widget.id === id);
   }
 
+  /**
+   * Update widget position in grid widgets subject.
+   * @param id Component linked id.
+   * @param newPosition New position of widget.
+   */
   updateWidgetPosition(id: string, newPosition: Position) {
     const currentValue = this.widgets.value;
     const updatedValue = [...currentValue];
@@ -30,13 +40,38 @@ export class GridService {
     for (let widget of currentValue) {
       if (widget.id === id) {
         widget.properties.position = newPosition;
-        return;
+        break;
       }
     }
-
+    
     this.widgets.next(updatedValue);
   }
 
+  /**
+   * Update wudget position and size in grid widgets subject.
+   * @param id Component linked id.
+   * @param newPosition New position of widget.
+   * @param newSize New size of widget.
+   */
+  updateWidgetPositionAndSize(id: string, newPosition: Position, newSize: Size) {
+    const currentValue = this.widgets.value;
+    const updatedValue = [...currentValue];
+    
+    for (let widget of currentValue) {
+      if (widget.id === id) {
+        widget.properties.position = newPosition;
+        widget.properties.size = newSize;
+        break;
+      }
+    }
+    
+    this.widgets.next(updatedValue);
+  }
+
+  /**
+   * Add a widget to widgets subject.
+   * @param newWidget New widget to add.
+   */
   addWidget(newWidget: Widget) {
     const currentValue = this.widgets.value;
     const updatedValue = [...currentValue, newWidget];
@@ -56,6 +91,7 @@ export class GridService {
         position.gridRowEnd > this.GRID_ROW_MAX_SPAN) {
       return false;
     }
+
     let currentWidget: Widget;
     for (let index = 0; index < this.widgets.value.length; index++) {
       currentWidget = this.widgets.value[index];
