@@ -1,8 +1,9 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Position, Size, Widget } from './models/models';
 import { GridService } from './grid.service';
 import { Observable, ReplaySubject } from 'rxjs';
 import { ResizeDirection, ResizeEvent, StartPoint } from './placeholder/placeholder.component';
+import { StateService } from './state.service';
 
 export interface ResizeDimensions {
   newWidth: number;
@@ -36,7 +37,7 @@ export class ResizeService {
   public readonly resizeDimensions: ReplaySubject<ResizeDimensions> = new ReplaySubject<ResizeDimensions>(1);
   public resizeDimensions$: Observable<ResizeDimensions> = this.resizeDimensions.asObservable();
 
-  constructor(private readonly gridService: GridService) {
+  constructor(private readonly gridService: GridService, private readonly stateService: StateService) {
     this.resizeDimensions.subscribe((value) => {
       this.newDimension = value;
     });
@@ -113,7 +114,7 @@ export class ResizeService {
     const newSize = newPositionProperties.size;
 
     if (this.gridService.isPositionAvailable(id, newPosition)) {
-      this.gridService.updateWidgetPositionAndSize(id, newPosition, newSize);
+      this.stateService.updateWidgetPositionAndSize(id, newPosition, newSize);
     }
   }
 

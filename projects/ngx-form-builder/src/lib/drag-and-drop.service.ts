@@ -1,8 +1,7 @@
 import { ElementRef, Injectable, Renderer2 } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { GridService } from './grid.service';
-import { EffectAllowed } from './directives/draggable.directive';
-import { Position, Size, Widget } from './models/models';
+import { BehaviorSubject } from 'rxjs';
+import { Position, Properties, Size, Widget } from './models/models';
+import { StateService } from './state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,7 @@ export class DragAndDropService {
   public currentDraggedSize: BehaviorSubject<Size>;
   public currentDraggedId: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-  constructor(private readonly gridService: GridService) {
+  constructor(private readonly gridService: StateService) {
     this.currentDraggedSize = new BehaviorSubject<Size>({
       minimalSize: {
         gridRowSpan: 1,
@@ -63,18 +62,13 @@ export class DragAndDropService {
    */
   public onAddDrop(id: string, position: Position) {
     const wrapperNode = document.getElementById(id) as HTMLElement;
-    console.log("drop")
-    console.log(this.currentDraggedSize.value)
-    const newWidget = {
-      id: 'widget-' + crypto.randomUUID(),
-      node: wrapperNode,
-      properties: {
-        position: position,
-        size: this.currentDraggedSize.value
-      }
-    } as Widget;
 
-    this.gridService.addWidget(newWidget);
+    const widgetProperties = {
+      position: position,
+      size: this.currentDraggedSize.value
+    } as Properties;
+
+    this.gridService.addWidget(wrapperNode, widgetProperties);
   }
 
   /**

@@ -1,7 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, TemplateRef, ViewChild } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, Signal, signal, TemplateRef, ViewChild } from '@angular/core';
 import { Cell } from '../models/grid.models';
-import { AsyncPipe } from '@angular/common';
 import { DropZoneDirective } from '../../directives/drop-zone.directive';
 import { Widget } from '../../models/models';
 import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
@@ -12,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'dnd-grid',
   standalone: true,
-  imports: [AsyncPipe, DndWrapperComponent, DropZoneDirective, ResizableDirective, MatInputModule],
+  imports: [DndWrapperComponent, DropZoneDirective, ResizableDirective, MatInputModule],
   templateUrl: './dnd-grid.component.html',
   styleUrl: './dnd-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -24,24 +22,21 @@ export class DndGridComponent implements AfterViewInit{
   @ContentChild(TemplateRef)
   public widgetTemplate!: TemplateRef<any>;
 
-  public readonly cells$: Observable<Cell[]>;
-  public readonly widgets$: Observable<Widget[]>;
+  public readonly cells = signal<Cell[]>([]);
+  public readonly widgets: Signal<Widget[]>;
 
   constructor(private readonly gridService: GridService) {
-    this.cells$ = this.initCells();
-    this.widgets$ = this.gridService.widgets$;
+    this.cells.set(this.gridService.generateGrid(12, 12));
+    this.widgets = this.gridService.widgets;
   }
 
   ngAfterViewInit(): void {
     this.gridService.currentGrid = this.grid;
   }
 
-  /**
-   * Init cells for empty row.
-   * @returns Observable of Cell array.
-   */
-  private initCells(): Observable<Cell[]> {
-    return of(this.generateGrid());
+  public changeSelected(event: Event, id: string) {
+    event.preventDefault();
+    this.gridService.changeSelected(id)
   }
 
   public trackCell(cell: Cell): string {
@@ -50,21 +45,5 @@ export class DndGridComponent implements AfterViewInit{
 
   public trackWidget(widget: Widget): string {
     return `${widget.properties.position.gridRowStart}|${widget.properties.position.gridColStart}`;
-  }
-
-  /**
-  * Generate the cells for the given grid size.
-  * 
-  * @return {Cell[]}
-  */
-  public generateGrid(): Cell[] {
-    const grid: Cell[] = [];
-    for (let row = 0; row < 12; row++) {
-      for (let col = 0; col < 12; col++) {
-        const cell = { rowPosition: row + 1, colPosition: col + 1 } as Cell;
-        grid.push(cell);
-      }
-    }
-    return grid;
   }
 }
