@@ -7,12 +7,12 @@ import { Widget } from '../../models/models';
 import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
 import { GridService } from '../../grid.service';
 import { ResizableDirective } from '../../directives/resizable.directive';
-import { ResizeService } from '../../resize.service';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'dnd-grid',
   standalone: true,
-  imports: [AsyncPipe, DndWrapperComponent, DropZoneDirective, ResizableDirective],
+  imports: [AsyncPipe, DndWrapperComponent, DropZoneDirective, ResizableDirective, MatInputModule],
   templateUrl: './dnd-grid.component.html',
   styleUrl: './dnd-grid.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

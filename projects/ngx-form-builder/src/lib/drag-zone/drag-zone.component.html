@@ -1,21 +1,61 @@
 <div>
-    <drag-zone-item-wrapper ndfDrag>
-        <div>1</div>
+    <drag-zone-item-wrapper ndfDrag [colSpan]="2" [rowSpan]="2">
+        <mat-form-field>
+            <mat-label>Input</mat-label>
+            <input matInput disabled />
+            
+        </mat-form-field>
     </drag-zone-item-wrapper>
-    
-    <drag-zone-item-wrapper ndfDrag>
-        <div>2</div>
+
+    <drag-zone-item-wrapper ndfDrag [colSpan]="2" [rowSpan]="2">
+        <mat-form-field>
+            <mat-label>Select</mat-label>
+            <mat-select disabled>
+                <mat-option value="one">First option</mat-option>
+                <mat-option value="two">Second option</mat-option>
+            </mat-select>
+            <mat-hint>hint</mat-hint>
+        </mat-form-field>
+    </drag-zone-item-wrapper>
+
+    <drag-zone-item-wrapper ndfDrag [colSpan]="2" [rowSpan]="2">
+        <mat-form-field>
+            <mat-label>Textarea</mat-label>
+            <textarea matInput disabled></textarea>
+            <mat-hint>hint</mat-hint>
+        </mat-form-field>
+    </drag-zone-item-wrapper>
+
+    <drag-zone-item-wrapper ndfDrag [colSpan]="2" [rowSpan]="2">
+        <mat-form-field>
+            <mat-label>Choose a date</mat-label>
+            <input matInput [matDatepicker]="picker" disabled>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
     </drag-zone-item-wrapper>
 
     <drag-zone-item-wrapper ndfDrag>
-        <div>3</div>
+        <mat-checkbox [disabled]="true">Label</mat-checkbox>
     </drag-zone-item-wrapper>
 
     <drag-zone-item-wrapper ndfDrag [colSpan]="2">
-        <img style="max-width: 142px; max-height: 80px;" src="https://www.admin.ch/gov/fr/accueil/departements/departement-interieur/_jcr_content/par/image/image.imagespooler.jpg/1712668426387/Foto_EBS.jpg" alt="EB-conf">  
+        <mat-radio-group disabled>
+            <mat-radio-button class="example-radio-button">Value 1</mat-radio-button>
+            <mat-radio-button class="example-radio-button">Value 2</mat-radio-button>
+        </mat-radio-group>
     </drag-zone-item-wrapper>
-    
-    <drag-zone-item-wrapper ndfDrag [colSpan]="2" [rowSpan]="2">
-        <img style="max-width: 142px; max-height: 80px;" src="https://www.admin.ch/gov/fr/accueil/departements/departement-affaires-etrangeres-dfae/_jcr_content/par/image/image.imagespooler.jpg/1509109206726/Cassis.jpg" alt="IC-conf">
+
+    <drag-zone-item-wrapper ndfDrag>
+        <h1>Titre 1</h1>
+    </drag-zone-item-wrapper>
+
+    <drag-zone-item-wrapper ndfDrag>
+        <h2>Titre 2</h2>
+    </drag-zone-item-wrapper>
+
+    <drag-zone-item-wrapper ndfDrag>
+        <h3>Titre 3</h3>
     </drag-zone-item-wrapper>
 </div>

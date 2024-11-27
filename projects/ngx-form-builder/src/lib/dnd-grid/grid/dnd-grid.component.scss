@@ -6,7 +6,6 @@ $validDropZoneColor: rgba(0, 255, 0, 0.5);
 .dnd-grid {
   display: grid;
   height: 100%;
-  border: 1px solid black;
   padding: 2em;
   gap: $gapSize;
   grid-template-rows: repeat($rowCount, minmax(0, 1fr));

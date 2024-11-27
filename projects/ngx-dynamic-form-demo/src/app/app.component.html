@@ -1,13 +1,50 @@
 <div class="container">
   <header>
-    <h1>HEADER</h1>
+    <h1>Form Builder Demo</h1>
   </header>
   <div class="content">
-    <drag-zone></drag-zone>
-    <dnd-grid></dnd-grid>
+    <mat-drawer-container class="content">
+      <mat-drawer mode="side" position="end" [opened]="opened$ | async" opened="{{opened$}}">
+        <mat-tab-group>
+          <mat-tab label="Widgets">
+            <div class="mat-tab-content">
+              <drag-zone></drag-zone>
+            </div>
+          </mat-tab>
+          <mat-tab label="Settings">
+            <div class="mat-tab-content">
+              @if (1 !== 1) {
+                <div>Selected widget properties</div>
+              }
+              @else {
+              <div class="no-component">
+                <mat-icon>warning_amber</mat-icon>
+                <div>
+                  No widget selected
+                </div>
+              </div>
+              }
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-drawer>
+      <mat-drawer-content>
+        <dnd-grid></dnd-grid>
+        <div class="collapse-button-container">
+          <span class="collapse-button" (click)="toggleButton()">
+            @if(opened$ | async) {
+              <mat-icon>arrow_forward_ios_new</mat-icon>	
+            }
+            @else {
+              <mat-icon>arrow_back_ios_new</mat-icon>
+            }
+          </span>
+        </div>
+      </mat-drawer-content>
+    </mat-drawer-container>
   </div>
   <footer>
-    <h1>FOOTER</h1>
+    <h3>Form Builder Demo</h3>
   </footer>
 </div>
 <router-outlet />

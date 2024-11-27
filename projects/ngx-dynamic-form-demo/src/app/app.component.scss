@@ -28,3 +28,57 @@ footer {
     flex: 1 1 auto;
     overflow: auto;
 }
+
+dnd-grid {
+	width: 100%;
+	height: 100%;
+	padding: 12px 0;
+}
+
+.mat-tab-content {
+	padding-top: 24px;
+}
+
+.no-component {
+	text-align: center;
+}
+
+mat-drawer-container {
+    height: 100%;
+    width: 100%;    
+}
+
+mat-drawer-content {
+	display: flex;
+	flex-direction: row;
+    background-color: #fff !important;
+}
+
+mat-drawer {
+	width: 20%;
+}
+
+mat-drawer-content > app-form-grid {
+	flex: 1 0 auto;
+}
+
+mat-drawer-content > .collapse-button-container {
+	display: flex;
+	align-items: center;
+    margin-left: 12px;
+}
+
+.collapse-button-container > span {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	height: 100px;
+	border-top: solid;
+	border-left: solid;
+	border-bottom: solid;
+	border-color: rgb(218, 218, 218);
+	border-radius: 10px 0 0 10px;
+	cursor: pointer;
+	background-color: #fff;
+	border-width: 1px;
+}

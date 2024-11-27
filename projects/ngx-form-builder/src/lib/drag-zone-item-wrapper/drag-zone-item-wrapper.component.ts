@@ -1,5 +1,4 @@
 import { Component, HostBinding, Input, Type } from '@angular/core';
-import { Size } from '../drag-and-drop.service';
 
 @Component({
   selector: 'drag-zone-item-wrapper',

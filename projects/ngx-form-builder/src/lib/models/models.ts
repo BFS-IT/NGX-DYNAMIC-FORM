@@ -5,8 +5,9 @@ export interface Widget {
 }
 
 export interface Properties {
-    position: Position
-    size: Size
+    position: Position,
+    size: Size,
+    value: string
 }
 
 export interface Size {

@@ -15,7 +15,7 @@ export class ResizableDirective implements AfterContentInit {
   constructor(private el: ElementRef,
     private readonly vcr: ViewContainerRef,
     private readonly resizeService: ResizeService) {
-      this.placeholder = this.vcr.createComponent(PlaceholderComponent);
+      //this.placeholder = this.vcr.createComponent(PlaceholderComponent);
   }
 
   ngAfterContentInit(): void {
