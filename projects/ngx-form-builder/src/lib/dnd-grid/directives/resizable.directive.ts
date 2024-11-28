@@ -1,8 +1,6 @@
-import { Directive, ElementRef, Renderer2, HostListener, AfterContentInit, Output, Input, EventEmitter, ViewContainerRef, ComponentRef } from '@angular/core';
-import { Position, Size, Widget } from '../models/models';
-import { GridService } from '../grid.service';
+import { Directive, ElementRef, AfterContentInit, ViewContainerRef, ComponentRef } from '@angular/core';
 import { ResizeService, StartDimensions } from '../resize.service';
-import { PlaceholderComponent, ResizeDirection, ResizeEvent } from '../placeholder/placeholder.component';
+import { PlaceholderComponent } from '../placeholder/placeholder.component';
 
 @Directive({
   selector: '[nfbResizable]',

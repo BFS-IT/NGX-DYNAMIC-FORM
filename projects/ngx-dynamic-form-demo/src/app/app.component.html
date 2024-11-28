@@ -11,19 +11,9 @@
               <drag-zone></drag-zone>
             </div>
           </mat-tab>
-          <mat-tab label="Settings">
+          <mat-tab label="Properties">
             <div class="mat-tab-content">
-              @if (1 !== 1) {
-                <div>Selected widget properties</div>
-              }
-              @else {
-              <div class="no-component">
-                <mat-icon>warning_amber</mat-icon>
-                <div>
-                  No widget selected
-                </div>
-              </div>
-              }
+              <properties-panel></properties-panel>
             </div>
           </mat-tab>
         </mat-tab-group>

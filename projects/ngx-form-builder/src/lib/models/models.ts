@@ -7,7 +7,14 @@ export interface Widget {
 export interface Properties {
     position: Position,
     size: Size,
-    value: string
+    value: string,
+    typeProperties: InputTypeProperties
+}
+
+export interface InputTypeProperties {
+    required: boolean,
+    placeholder: string,
+    label: string
 }
 
 export interface Size {

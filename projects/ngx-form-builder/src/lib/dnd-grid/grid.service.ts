@@ -1,7 +1,7 @@
 import { ElementRef, Injectable, Signal } from '@angular/core';
-import { Position, Widget } from './models/models';
-import { Cell } from './dnd-grid/models/grid.models';
-import { StateService } from './state.service';
+import { Position, Widget } from '../models/models';
+import { Cell } from './models/grid.models';
+import { StateService } from '../state.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,8 +1,5 @@
-import { AfterContentInit, AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, Renderer2 } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
-import { Position } from '../models/models';
+import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { ResizeService } from '../resize.service';
-import { setThrowInvalidWriteToSignalError } from '@angular/core/primitives/signals';
 
 export type ResizeDirection = 'UP' | 'DOWN' | 'RIGHT' | 'LEFT';
 

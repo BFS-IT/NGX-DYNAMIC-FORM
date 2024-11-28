@@ -1,10 +1,10 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChild, ElementRef, Signal, signal, TemplateRef, ViewChild } from '@angular/core';
 import { Cell } from '../models/grid.models';
-import { DropZoneDirective } from '../../directives/drop-zone.directive';
+import { DropZoneDirective } from '../directives/drop-zone.directive';
 import { Widget } from '../../models/models';
-import { DndWrapperComponent } from '../../dnd-wrapper/dnd-wrapper.component';
-import { GridService } from '../../grid.service';
-import { ResizableDirective } from '../../directives/resizable.directive';
+import { DndWrapperComponent } from '../dnd-wrapper/dnd-wrapper.component';
+import { GridService } from '../grid.service';
+import { ResizableDirective } from '../directives/resizable.directive';
 import { MatInputModule } from '@angular/material/input';
 
 @Component({

@@ -1,7 +1,5 @@
 import { Directive, HostListener, Input, HostBinding, Renderer2, ElementRef } from '@angular/core';
 import { DragAndDropService } from '../drag-and-drop.service';
-import { Position, Size } from '../models/models';
-import { GridService } from '../grid.service';
 
 // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer/effectAllowed
 export type EffectAllowed = 'move' | 'copy' | 'link' | 'none' | 'copyMove' | 'copyLink' | 'linkMove' | 'all' | "uninitialized";

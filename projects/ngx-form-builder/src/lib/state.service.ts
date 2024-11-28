@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Position, Properties, Size, Widget } from './models/models';
-import { ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +8,7 @@ import { ReplaySubject } from 'rxjs';
 export class StateService {
   public widgets = signal<Widget[]>([]);
   private currentSelectedWidget: ReplaySubject<Widget> = new ReplaySubject(1);
+  public currentSelectedWidget$: Observable<Widget> = this.currentSelectedWidget.asObservable();
 
   constructor() { }
 
@@ -16,14 +17,11 @@ export class StateService {
     
     if (widget) {
       this.currentSelectedWidget.next(widget);
+      console.log(this.currentSelectedWidget)
     }
     else {
       throw Error("Widget with id not found in state.", { cause: "Undefined widget on setting current selected widget." })
     }
-  }
-
-  getSelectedWidgetObservable() {
-    return this.currentSelectedWidget.asObservable();
   }
 
   /**

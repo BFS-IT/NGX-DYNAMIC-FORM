@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Position, Size, Widget } from './models/models';
+import { Position, Size, Widget } from '../models/models';
 import { GridService } from './grid.service';
 import { Observable, ReplaySubject } from 'rxjs';
 import { ResizeDirection, ResizeEvent, StartPoint } from './placeholder/placeholder.component';
-import { StateService } from './state.service';
+import { StateService } from '../state.service';
 
 export interface ResizeDimensions {
   newWidth: number;

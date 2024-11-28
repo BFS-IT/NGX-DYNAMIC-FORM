@@ -1,0 +1,63 @@
+@if(properties$ | async; as properties) {
+    <div class="properties-container">
+        <div class="property">
+            <mat-slide-toggle>Required</mat-slide-toggle>
+        </div>
+        <div class="property">
+            <mat-form-field>
+                <mat-label>Value</mat-label>
+                <input matInput placeholder="Value"
+                    [required]="false" [value]="properties?.value ?? ''" />
+            </mat-form-field>
+        </div>
+        <div class="property grid-container">
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Row start</mat-label>
+                <input matInput placeholder="Row start"
+                    [required]="true" type="number" min="1" max="12" [value]="properties.position.gridRowStart" />
+            </mat-form-field>
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Row end</mat-label>
+                <input matInput placeholder="Row end"
+                    [required]="true" [value]="properties.position.gridRowEnd" />
+            </mat-form-field>
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Col start</mat-label>
+                <input matInput placeholder="Col start"
+                    [required]="true" [value]="properties.position.gridColStart" />
+            </mat-form-field>
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Col end</mat-label>
+                <input matInput placeholder="Col end"
+                    [required]="true" [value]="properties.position.gridColEnd" />
+            </mat-form-field>
+        </div>
+        <div class="property grid-container">
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Row span (current size)</mat-label>
+                <input matInput placeholder="Row span"
+                    [required]="true" [value]="properties!.size.current.gridRowSpan" />
+            </mat-form-field>
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Col span (current size)</mat-label>
+                <input matInput placeholder="Col span"
+                    [required]="true" [value]="properties!.size.current.gridColSpan" />
+            </mat-form-field>
+        </div>
+        <div class="property grid-container">
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Row span (minimal size)</mat-label>
+                <input matInput placeholder="Row span"
+                    [required]="true" disabled [value]="properties!.size.minimalSize.gridRowSpan" />
+            </mat-form-field>
+            <mat-form-field class="grid-item" subscriptSizing="dynamic">
+                <mat-label>Col span (minimal size)</mat-label>
+                <input matInput placeholder="Col span"
+                    [required]="true" disabled [value]="properties!.size.minimalSize.gridColSpan" />
+            </mat-form-field>
+        </div>
+    </div>
+}
+@else {
+    <div>no</div>
+}

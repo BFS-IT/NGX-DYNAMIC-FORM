@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, Directive, ElementRef, EventEmitter, HostListener, Input, Output, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef,  Input, Renderer2, ViewChild } from '@angular/core';
 import { DragAndDropService } from '../drag-and-drop.service';
-import { Widget } from '../models/models';
+import { Widget } from '../../models/models';
 import { DraggableDirective } from '../directives/draggable.directive';
 
 @Component({

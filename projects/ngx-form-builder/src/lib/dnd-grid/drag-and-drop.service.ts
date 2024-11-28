@@ -1,7 +1,7 @@
 import { ElementRef, Injectable, Renderer2 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Position, Properties, Size, Widget } from './models/models';
-import { StateService } from './state.service';
+import { Position, Properties, Size, Widget } from '../models/models';
+import { StateService } from '../state.service';
 
 @Injectable({
   providedIn: 'root'

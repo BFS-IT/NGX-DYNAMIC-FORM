@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, Type } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 
 @Component({
   selector: 'drag-zone-item-wrapper',
