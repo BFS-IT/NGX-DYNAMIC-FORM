@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { Position, Properties, Size, Widget } from './models/models';
+import { InputTypeProperties, Position, Properties, Size, Widget } from './models/models';
 import { Observable, ReplaySubject } from 'rxjs';
 
 @Injectable({
@@ -29,12 +29,21 @@ export class StateService {
   * Id is automaticly generated as widget-RANDOMUUID.
   * @param newWidget New widget to add.
   */
-  public addWidget(node: HTMLElement, properties: Properties) {
-    const newWidget = {
+  public addWidget(node: HTMLElement, position: Required<Position>, size: Required<Size>) {
+    const newWidget: Required<Widget> = {
       id: 'widget-' + crypto.randomUUID(),
       node: node,
-      properties: properties
-    } as Widget;
+      properties: {
+        position: position,
+        size: size,
+        value: '',
+        typeProperties: {
+          required: true,
+          placeholder: 'Placeholder',
+          label: 'label'
+        }
+      }
+    };
 
     this.widgets.update(current => [...current, newWidget]);
   }
@@ -87,5 +96,23 @@ export class StateService {
   public updateWidgetPositionAndSize(id: string, newPosition: Position, newSize: Size) {
     this.updateWidgetPosition(id, newPosition);
     this.updateWidgetSize(id, newSize);
+  }
+
+  public updateWidgetValue(id: string, value: string) {
+    this.widgets.update(widgets => widgets.map(
+      widget => widget.id === id ? { ...widget, properties: { ...widget.properties, value: value } } : widget
+    ));
+  }
+
+  public updateWidgetInputTypeProperties(id: string, typeProperties: InputTypeProperties) {
+    this.widgets.update(widgets => widgets.map(
+      widget => widget.id === id ? { ...widget, properties: { ...widget.properties, typeProperties: typeProperties } } : widget
+    ));
+  }
+
+  public updateWidgetProperties(id: string, properties: Properties) {
+    this.widgets.update(widgets => widgets.map(
+      widget => widget.id === id ? { ...widget, properties: properties } : widget
+    ));
   }
 }

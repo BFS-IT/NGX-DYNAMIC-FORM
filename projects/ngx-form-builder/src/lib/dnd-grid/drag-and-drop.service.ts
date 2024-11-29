@@ -39,8 +39,8 @@ export class DragAndDropService {
     const currentSize: Size = widget ?
       widget?.properties.size :
       {
-        minimalSize: minimalSize,
-        current: minimalSize
+        minimalSize: {...minimalSize},
+        current: {...minimalSize}
       };
 
     this.currentDraggedId.next(id);
@@ -63,12 +63,7 @@ export class DragAndDropService {
   public onAddDrop(id: string, position: Position) {
     const wrapperNode = document.getElementById(id) as HTMLElement;
 
-    const widgetProperties = {
-      position: position,
-      size: this.currentDraggedSize.value
-    } as Properties;
-
-    this.gridService.addWidget(wrapperNode, widgetProperties);
+    this.gridService.addWidget(wrapperNode, position, this.currentDraggedSize.value);
   }
 
   /**

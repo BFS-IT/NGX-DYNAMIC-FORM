@@ -10,7 +10,7 @@ import { MatInput } from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common'
-import { PropertiesPanelComponent, DragZoneItemWrapperComponent, DndGridComponent, DragZoneComponent } from 'ngx-form-builder';
+import { PropertiesPanelComponent, DragZoneItemWrapperComponent, DndGridComponent, DragZoneComponent, JsonPreviewComponent } from 'ngx-form-builder';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +19,6 @@ import { PropertiesPanelComponent, DragZoneItemWrapperComponent, DndGridComponen
     RouterOutlet,
     DndGridComponent,
     DragZoneComponent,
-    DragZoneItemWrapperComponent,
     MatIcon,
     MatDrawerContainer,
     MatDrawerContent,
@@ -29,11 +28,9 @@ import { PropertiesPanelComponent, DragZoneItemWrapperComponent, DndGridComponen
     MatTabGroup,
     MatTabsModule,
     CommonModule,
-    MatButton,
-    MatInput,
     MatSelectModule,
-    DragZoneItemWrapperComponent,
-    PropertiesPanelComponent
+    PropertiesPanelComponent,
+    JsonPreviewComponent,
 ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

@@ -1,11 +1,12 @@
 {
   "name": "build-ngx-dynamic-form",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start:demo": "ng serve ngx-dynamic-form-demo",
     "build:demo": "ng build ngx-dynamic-form-demo",
     "watch:builder": "ng build ngx-form-builder --watch --configuration development",
+    "watch:renderer": "ng build ngx-form-renderer --watch --configuration development",
     "test": "ng test"
   },
   "private": true,
